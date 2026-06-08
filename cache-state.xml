@@ -1,0 +1,30 @@
+<project version="4">
+  <component name="MarkdownArtifactFilesPersistentStateV2">
+    <knownArtifactFiles>
+      <entry virtualFileUrl="file://$USER_HOME$/AppData/Local/Google/AndroidStudio2026.1.1/projects/lounkap.2a91c4d5/.artifacts/20260604-212032-d6bef544-7c05-425f-96da-0cdc914e65e0/implementation_plan.artifact.md">
+        <fileState commentingSessionTitle="Implementation Plan" detailEnabled="true" lastModifiedTimeUtc="2026-06-04T21:00:00Z" />
+      </entry>
+      <entry virtualFileUrl="file://$USER_HOME$/AppData/Local/Google/AndroidStudio2026.1.1/projects/lounkap.2a91c4d5/.artifacts/20260604-212032-d6bef544-7c05-425f-96da-0cdc914e65e0/task.artifact.md">
+        <fileState commentingSessionTitle="Task List" lastModifiedTimeUtc="2026-06-04T21:00:00Z" />
+      </entry>
+      <entry virtualFileUrl="file://$USER_HOME$/AppData/Local/Google/AndroidStudio2026.1.1/projects/lounkap.2a91c4d5/.artifacts/20260604-212032-d6bef544-7c05-425f-96da-0cdc914e65e0/walkthrough.artifact.md">
+        <fileState commentingSessionTitle="Walkthrough" detailEnabled="true" lastModifiedTimeUtc="2026-06-04T22:00:00Z" />
+      </entry>
+    </knownArtifactFiles>
+  </component>
+  <component name="RestoreUpdateTree">{}</component>
+  <component name="StoredSessionsInfoStore">
+    <option name="sessions">
+      <list>
+        <SessionInfoState>
+          <option name="id" value="20260604-212032-d6bef544-7c05-425f-96da-0cdc914e65e0" />
+          <option name="lastUpdateTimestamp" value="1780609058647" />
+          <option name="responseMode" value="Agent" />
+          <option name="title" value="You are an elite Frontend Engineer and AI Development Assistant specializing in" />
+          <option name="totalTokenCount" value="42934" />
+          <option name="user" value="yvanbinda@gmail.com" />
+        </SessionInfoState>
+      </list>
+    </option>
+  </component>
+</project>
