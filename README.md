@@ -1,2 +1,2 @@
 # lounkap-frontend
-Frontend de l'application
+Frontend de l'application de gestion de tontine lounkap
