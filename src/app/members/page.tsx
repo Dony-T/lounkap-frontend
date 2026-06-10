@@ -1,11 +1,16 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Search, UserPlus, Shield, UserCheck, BarChart3 } from 'lucide-react';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { Button } from '@/presentation/components/ui/Button';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { InfoCard } from '@/presentation/components/dashboard/InfoCard';
+import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 
 export default function MembersPage() {
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-xl">
@@ -19,7 +24,10 @@ export default function MembersPage() {
               className="w-full bg-white border border-slate-light rounded-2xl pl-[48px] pr-md py-sm text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-slate-grey/50 shadow-sm"
             />
           </div>
-          <Button className="gap-sm py-[10px]">
+          <Button
+            className="gap-sm py-[10px]"
+            onClick={() => setIsAddMemberOpen(true)}
+          >
             <UserPlus size={18} />
             Ajouter un membre
           </Button>
@@ -49,6 +57,11 @@ export default function MembersPage() {
           />
         </section>
       </div>
+
+      <AddMemberDrawer
+        isOpen={isAddMemberOpen}
+        onClose={() => setIsAddMemberOpen(false)}
+      />
     </DashboardLayout>
   );
 }
