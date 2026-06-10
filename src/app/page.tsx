@@ -7,6 +7,7 @@ import { DashboardLayout } from '@/presentation/components/layout/DashboardLayou
 import { TontineCard } from '@/presentation/components/dashboard/TontineCard';
 import { SummarySection } from '@/presentation/components/dashboard/SummarySection';
 import { CreateTontineDrawer } from '@/presentation/components/dashboard/CreateTontineDrawer';
+import { JoinTontineDrawer } from '@/presentation/components/dashboard/JoinTontineDrawer';
 
 const tontines = [
   {
@@ -45,7 +46,8 @@ const tontines = [
 ];
 
 export default function Home() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isJoinOpen, setIsJoinOpen] = useState(false);
 
   return (
     <DashboardLayout>
@@ -56,13 +58,17 @@ export default function Home() {
             <p className="text-body-md text-slate-grey">Gérez vos cercles d'épargne et suivez vos cotisations.</p>
           </div>
           <div className="flex gap-md">
-            <Button variant="secondary" className="gap-sm">
+            <Button
+              variant="secondary"
+              className="gap-sm"
+              onClick={() => setIsJoinOpen(true)}
+            >
               <UserPlus size={18} />
               Rejoindre
             </Button>
             <Button
               className="gap-sm"
-              onClick={() => setIsDrawerOpen(true)}
+              onClick={() => setIsCreateOpen(true)}
             >
               <Plus size={18} />
               Créer une tontine
@@ -80,8 +86,13 @@ export default function Home() {
       </div>
 
       <CreateTontineDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+      />
+
+      <JoinTontineDrawer
+        isOpen={isJoinOpen}
+        onClose={() => setIsJoinOpen(false)}
       />
     </DashboardLayout>
   );
