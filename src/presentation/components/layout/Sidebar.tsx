@@ -22,7 +22,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 h-screen bg-white border-r border-slate-light flex flex-col p-md fixed left-0 top-0">
+    <aside className="w-64 h-screen bg-white border-r border-slate-light flex flex-col p-md fixed left-0 top-0 z-40">
       <div className="flex items-center gap-sm mb-xxl px-sm">
         <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
           <Coins size={24} />
