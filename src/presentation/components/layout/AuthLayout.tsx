@@ -27,17 +27,16 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
               Epargnez ensemble, <br />
               <span className="text-primary font-bold">progressez ensemble</span>
             </h1>
-            <p className="text-white/70 text-lg leading-relaxed">
-              Rejoignez la premiere plateforme de tontines digitales. Simple, securisee, accessible a tous.
-            </p>
           </div>
         </div>
       </div>
 
       {/* Right Side: Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-md bg-[#F8FAFC] overflow-y-auto">
-        <div className="w-full max-w-[500px] animate-fade-in py-lg">
-          {children}
+      <div className="w-full lg:w-1/2 flex flex-col bg-[#F8FAFC] overflow-y-auto">
+        <div className="flex-1 flex items-start justify-center p-md pt-xxl">
+          <div className="w-full max-w-[500px] animate-fade-in mt-xl">
+            {children}
+          </div>
         </div>
       </div>
     </div>
