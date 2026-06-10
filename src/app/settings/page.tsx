@@ -1,15 +1,37 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown, Check } from 'lucide-react';
+import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown, Check, Bell, Globe, ChevronUp } from 'lucide-react';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { Button } from '@/presentation/components/ui/Button';
 import { Input } from '@/presentation/components/ui/Input';
 import { Card } from '@/presentation/components/ui/Card';
 import { cn } from '@/presentation/utils/cn';
 
+const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
+  <button
+    onClick={onChange}
+    className={cn(
+      "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2",
+      enabled ? "bg-secondary" : "bg-slate-light/50"
+    )}
+  >
+    <span
+      className={cn(
+        "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+        enabled ? "translate-x-5" : "translate-x-0"
+      )}
+    />
+  </button>
+);
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
+  const [notifications, setNotifications] = useState({
+    reminders: true,
+    payouts: true,
+    activity: false
+  });
 
   const tabs = [
     { id: 'profile', label: 'Mon Profil', icon: User },
@@ -49,7 +71,6 @@ export default function SettingsPage() {
         {activeTab === 'profile' && (
           <div className="flex flex-col gap-lg animate-fade-in">
             {/* Profile Photo Card */}
-            {/* ... (keep existing profile code) */}
             <Card padding="lg" className="flex items-center gap-xl">
               <div className="relative">
                 <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center text-secondary font-bold text-xl">
@@ -195,10 +216,79 @@ export default function SettingsPage() {
             </Card>
           </div>
         )}
-      </div>
-    </DashboardLayout>
-  );
-}
+
+        {activeTab === 'preferences' && (
+          <div className="flex flex-col gap-lg animate-fade-in">
+            {/* Notifications and Alerts Card */}
+            <Card padding="lg" className="flex flex-col gap-lg">
+              <div className="flex items-center gap-sm text-slate mb-md">
+                <div className="w-10 h-10 bg-secondary/5 rounded-full flex items-center justify-center text-secondary">
+                   <Bell size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-xl font-bold text-slate">Notifications et Alertes</h3>
+              </div>
+
+              <div className="divide-y divide-slate-light/30">
+                <div className="flex items-center justify-between py-lg first:pt-0">
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-sm font-bold text-slate leading-tight">Rappels de cotisation</h4>
+                    <p className="text-sm text-slate-grey">Recevoir une alerte 3 jours avant l'échéance de votre tontine.</p>
+                  </div>
+                  <Toggle
+                    enabled={notifications.reminders}
+                    onChange={() => setNotifications({ ...notifications, reminders: !notifications.reminders })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between py-lg">
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-sm font-bold text-slate leading-tight">Décaissements et Prêts</h4>
+                    <p className="text-sm text-slate-grey">Être notifié immédiatement après un virement ou une approbation de prêt.</p>
+                  </div>
+                  <Toggle
+                    enabled={notifications.payouts}
+                    onChange={() => setNotifications({ ...notifications, payouts: !notifications.payouts })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between py-lg last:pb-0">
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-sm font-bold text-slate leading-tight">Activité du cercle</h4>
+                    <p className="text-sm text-slate-grey">Suivre les messages et discussions au sein de vos cercles d'investissement.</p>
+                  </div>
+                  <Toggle
+                    enabled={notifications.activity}
+                    onChange={() => setNotifications({ ...notifications, activity: !notifications.activity })}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Languages Card */}
+            <Card padding="lg" className="flex flex-col gap-lg">
+              <div className="flex items-center gap-sm text-slate mb-md">
+                <div className="w-10 h-10 bg-secondary/5 rounded-full flex items-center justify-center text-secondary">
+                   <Globe size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-xl font-bold text-slate">Langues</h3>
+              </div>
+
+              <div className="flex flex-col gap-xs max-w-sm">
+                <label className="text-[11px] font-bold text-slate uppercase tracking-wider">Langue de l'interface</label>
+                <div className="relative">
+                  <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-[#f4f7fe]/50 text-sm text-slate">
+                    <option>Français</option>
+                    <option>Anglais</option>
+                  </select>
+                  <div className="absolute right-md top-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none text-slate-grey/50">
+                    <ChevronUp size={12} className="-mb-1" />
+                    <ChevronDown size={12} className="-mt-1" />
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );
