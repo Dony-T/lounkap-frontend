@@ -1,9 +1,12 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Plus, UserPlus } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { TontineCard } from '@/presentation/components/dashboard/TontineCard';
 import { SummarySection } from '@/presentation/components/dashboard/SummarySection';
+import { CreateTontineDrawer } from '@/presentation/components/dashboard/CreateTontineDrawer';
 
 const tontines = [
   {
@@ -42,6 +45,8 @@ const tontines = [
 ];
 
 export default function Home() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-xxl">
@@ -55,7 +60,10 @@ export default function Home() {
               <UserPlus size={18} />
               Rejoindre
             </Button>
-            <Button className="gap-sm">
+            <Button
+              className="gap-sm"
+              onClick={() => setIsDrawerOpen(true)}
+            >
               <Plus size={18} />
               Créer une tontine
             </Button>
@@ -70,8 +78,11 @@ export default function Home() {
 
         <SummarySection />
       </div>
+
+      <CreateTontineDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </DashboardLayout>
   );
 }
-
-
