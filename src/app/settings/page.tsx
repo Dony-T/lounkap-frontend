@@ -273,16 +273,18 @@ export default function SettingsPage() {
                 <h3 className="text-xl font-bold text-slate">Langues</h3>
               </div>
 
-              <div className="flex flex-col gap-xs max-w-sm">
-                <label className="text-[11px] font-bold text-slate uppercase tracking-wider">Langue de l'interface</label>
-                <div className="relative">
-                  <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-[#f4f7fe]/50 text-sm text-slate">
+              <div className="flex flex-col gap-sm">
+                <label className="text-[11px] font-bold text-slate-grey uppercase tracking-widest whitespace-nowrap">
+                  Langue de l'interface
+                </label>
+                <div className="relative w-full max-w-xs">
+                  <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-slate-light/5 text-sm text-slate cursor-pointer focus:border-primary transition-colors">
                     <option>Français</option>
                     <option>Anglais</option>
                   </select>
                   <div className="absolute right-md top-1/2 -translate-y-1/2 flex flex-col items-center pointer-events-none text-slate-grey/50">
-                    <ChevronUp size={12} className="-mb-1" />
-                    <ChevronDown size={12} className="-mt-1" />
+                    <ChevronUp size={10} className="-mb-0.5" />
+                    <ChevronDown size={10} className="-mt-0.5" />
                   </div>
                 </div>
               </div>
