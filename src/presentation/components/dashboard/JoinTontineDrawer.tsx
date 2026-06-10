@@ -43,7 +43,7 @@ export const JoinTontineDrawer = ({ isOpen, onClose }: JoinTontineDrawerProps) =
 
       {/* Drawer */}
       <div className={cn(
-        "relative w-full max-w-md bg-white h-full shadow-2xl transition-transform duration-300 flex flex-col z-[101]",
+        "relative w-full max-w-xl bg-white h-full shadow-2xl transition-transform duration-300 flex flex-col z-[101]",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Header */}

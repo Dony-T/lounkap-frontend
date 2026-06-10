@@ -19,8 +19,8 @@ export const CreateTontineDrawer = ({ isOpen, onClose }: CreateTontineDrawerProp
       setIsRendered(true);
       document.body.style.overflow = 'hidden';
     } else {
-      const timer = setTimeout(() => setIsRendered(false), 300);
       document.body.style.overflow = 'unset';
+      const timer = setTimeout(() => setIsRendered(false), 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -29,18 +29,21 @@ export const CreateTontineDrawer = ({ isOpen, onClose }: CreateTontineDrawerProp
 
   return (
     <div className={cn(
-      "fixed inset-0 z-50 flex justify-end transition-opacity duration-300",
-      isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+      "fixed inset-0 z-[100] flex justify-end",
+      isOpen ? "visible" : "invisible"
     )}>
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate/40 backdrop-blur-[2px]"
+        className={cn(
+          "absolute inset-0 bg-slate/40 backdrop-blur-[2px] transition-opacity duration-300",
+          isOpen ? "opacity-100" : "opacity-0"
+        )}
         onClick={onClose}
       />
 
       {/* Drawer */}
       <div className={cn(
-        "relative w-full max-w-md bg-white h-full shadow-2xl transition-transform duration-300 flex flex-col",
+        "relative w-full max-w-xl bg-white h-full shadow-2xl transition-transform duration-300 flex flex-col z-[101]",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Header */}
