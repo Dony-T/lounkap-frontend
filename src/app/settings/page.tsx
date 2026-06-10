@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown } from 'lucide-react';
+import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown, Check } from 'lucide-react';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { Button } from '@/presentation/components/ui/Button';
 import { Input } from '@/presentation/components/ui/Input';
@@ -47,8 +47,9 @@ export default function SettingsPage() {
         </div>
 
         {activeTab === 'profile' && (
-          <div className="flex flex-col gap-lg">
+          <div className="flex flex-col gap-lg animate-fade-in">
             {/* Profile Photo Card */}
+            {/* ... (keep existing profile code) */}
             <Card padding="lg" className="flex items-center gap-xl">
               <div className="relative">
                 <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center text-secondary font-bold text-xl">
@@ -144,6 +145,60 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
+
+        {activeTab === 'security' && (
+          <div className="flex flex-col gap-lg animate-fade-in">
+            <Card padding="lg" className="flex flex-col gap-xl">
+              <div className="flex items-center gap-sm text-slate">
+                <div className="w-8 h-8 bg-[#fdfaf1] rounded-lg flex items-center justify-center text-[#a68928] border border-[#f5ead2]">
+                   <Lock size={18} strokeWidth={2.5} />
+                </div>
+                <h3 className="text-sm font-bold text-slate">Mot de passe</h3>
+              </div>
+
+              <div className="flex flex-col gap-lg">
+                <div className="flex flex-col gap-xs">
+                  <label className="text-sm font-bold text-slate">Mot de passe actuel</label>
+                  <Input
+                    type="password"
+                    defaultValue="........"
+                    className="bg-slate-light/5 border-slate-light/40"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-md">
+                  <div className="flex flex-col gap-xs">
+                    <label className="text-sm font-bold text-slate">Nouveau mot de passe</label>
+                    <Input
+                      type="password"
+                      defaultValue="........"
+                      className="bg-slate-light/5 border-slate-light/40"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-xs">
+                    <label className="text-sm font-bold text-slate">Confirmer le mot de passe</label>
+                    <Input
+                      type="password"
+                      defaultValue="........"
+                      className="bg-slate-light/5 border-slate-light/40"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end mt-md">
+                <Button className="gap-sm px-xl py-md rounded-full font-bold">
+                  <Check size={18} />
+                  Mettre à jour
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
+  );
+}
       </div>
     </DashboardLayout>
   );
