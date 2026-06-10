@@ -13,6 +13,8 @@ import { cn } from '@/presentation/utils/cn';
 const navItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', id: 'dashboard' },
   { icon: Coins, label: 'Mes Tontines', id: 'tontines', active: true },
+  { icon: Users, label: 'Membres', id: 'members' },
+  { icon: Wallet, label: 'Transactions', id: 'transactions' },
   { icon: HelpCircle, label: 'Aide', id: 'help' },
 ];
 
@@ -53,7 +55,7 @@ export const Sidebar = () => {
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-bold text-slate">Inviter un membre</p>
-            {/* <p className="text-[10px] text-slate-grey">Gagnez des bonus d'épargne.</p> */}
+            <p className="text-[10px] text-slate-grey">Gagnez des bonus d'épargne.</p>
           </div>
         </div>
 

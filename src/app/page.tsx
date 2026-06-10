@@ -7,6 +7,7 @@ import { SummarySection } from '@/presentation/components/dashboard/SummarySecti
 
 const tontines = [
   {
+    id: '1',
     type: 'business' as const,
     title: 'Épargne Entrepreneurs',
     description: 'Réunion mensuelle pour le financement de projets innovants.',
@@ -17,6 +18,7 @@ const tontines = [
     code: 'TX-9824-A',
   },
   {
+    id: '2',
     type: 'family' as const,
     title: 'Cercle Familial',
     description: 'Tontine restreinte aux membres de la famille Kouamé.',
@@ -27,6 +29,7 @@ const tontines = [
     code: 'FAM-1234-B',
   },
   {
+    id: '3',
     type: 'realestate' as const,
     title: 'Projet Immobilier',
     description: 'Objectif d\'achat de terrains groupés en périphérie.',
