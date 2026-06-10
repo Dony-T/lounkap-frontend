@@ -55,7 +55,14 @@ export const Sidebar = () => {
       </nav>
 
       <div className="mt-auto flex flex-col gap-md">
-        <button className="flex items-center gap-md px-md py-sm rounded-2xl text-slate-grey hover:text-status-error transition-colors text-sm font-medium">
+        <button
+          onClick={() => {
+            // Simulate logout by removing the cookie
+            document.cookie = "auth_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+            window.location.href = "/auth/login";
+          }}
+          className="flex items-center gap-md px-md py-sm rounded-2xl text-slate-grey hover:text-status-error transition-colors text-sm font-medium"
+        >
           <LogOut size={20} />
           Déconnexion
         </button>

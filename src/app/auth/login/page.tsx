@@ -53,7 +53,14 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Button className="w-full py-md text-base shadow-lg shadow-primary/20">
+          <Button
+            className="w-full py-md text-base shadow-lg shadow-primary/20"
+            onClick={() => {
+              // Simulate login by setting a cookie
+              document.cookie = "auth_session=true; path=/";
+              window.location.href = "/";
+            }}
+          >
             Se connecter
           </Button>
 
