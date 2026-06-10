@@ -1,4 +1,8 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
@@ -11,14 +15,16 @@ import {
 import { cn } from '@/presentation/utils/cn';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Tableau de bord', id: 'dashboard' },
-  { icon: Coins, label: 'Mes Tontines', id: 'tontines', active: true },
-  { icon: Users, label: 'Membres', id: 'members' },
-  { icon: Wallet, label: 'Transactions', id: 'transactions' },
-  { icon: HelpCircle, label: 'Aide', id: 'help' },
+  { icon: LayoutDashboard, label: 'Tableau de bord', id: 'dashboard', href: '/' },
+  { icon: Coins, label: 'Mes Tontines', id: 'tontines', href: '/tontines' },
+  { icon: Users, label: 'Membres', id: 'members', href: '/members' },
+  { icon: Wallet, label: 'Transactions', id: 'transactions', href: '/transactions' },
+  { icon: HelpCircle, label: 'Aide', id: 'help', href: '/help' },
 ];
 
 export const Sidebar = () => {
+  const pathname = usePathname();
+
   return (
     <aside className="w-64 h-screen bg-white border-r border-slate-light flex flex-col p-md fixed left-0 top-0">
       <div className="flex items-center gap-sm mb-xxl px-sm">
@@ -32,20 +38,24 @@ export const Sidebar = () => {
       </div>
 
       <nav className="flex-1 flex flex-col gap-xs">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            className={cn(
-              "flex items-center gap-md px-md py-sm rounded-2xl transition-all font-medium text-sm",
-              item.active
-                ? "bg-primary text-white shadow-md shadow-primary/20"
-                : "text-slate-grey hover:bg-slate-light/10 hover:text-slate"
-            )}
-          >
-            <item.icon size={20} />
-            {item.label}
-          </button>
-        ))}
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-md px-md py-sm rounded-2xl transition-all font-medium text-sm",
+                isActive
+                  ? "bg-primary text-white shadow-md shadow-primary/20"
+                  : "text-slate-grey hover:bg-slate-light/10 hover:text-slate"
+              )}
+            >
+              <item.icon size={20} />
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="mt-auto flex flex-col gap-md">
