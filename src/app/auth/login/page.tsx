@@ -97,9 +97,8 @@ export default function LoginPage() {
           <Button
             type="submit"
             className="w-full py-md text-base shadow-lg shadow-primary/20"
-            disabled={isLoading}
+            isLoading={isLoading}
           >
-            {isLoading ? <Loader2 className="animate-spin mr-2" size={18} /> : null}
             {isLoading ? 'Connexion en cours...' : 'Se connecter'}
           </Button>
 

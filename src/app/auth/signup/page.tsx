@@ -156,7 +156,7 @@ export default function SignupPage() {
           <Button
             type="submit"
             className="w-full py-md text-base shadow-lg shadow-primary/20 mt-md"
-            disabled={isLoading}
+            isLoading={isLoading}
           >
             {isLoading ? "Création en cours..." : "Creer mon compte"}
           </Button>
@@ -169,31 +169,6 @@ export default function SignupPage() {
           </p>
         </div>
       </form>
-    </AuthLayout>
-  );
-}
-
-          <div className="px-1 py-2">
-            <label className="flex items-start gap-sm cursor-pointer group">
-              <input type="checkbox" className="mt-1 w-4 h-4 rounded border-slate-light text-primary focus:ring-primary" />
-              <span className="text-xs text-slate-grey leading-relaxed">
-                J'accepte les <Link href="#" className="text-primary font-bold hover:underline">conditions d'utilisation</Link> et la <Link href="#" className="text-primary font-bold hover:underline">politique de confidentialité</Link>
-              </span>
-            </label>
-          </div>
-
-          <Button className="w-full py-md text-base shadow-lg shadow-primary/20 mt-md">
-            Creer mon compte
-          </Button>
-
-          <p className="text-center text-sm text-slate-grey mt-md">
-            Déjà membre ?{' '}
-            <Link href="/auth/login" className="text-primary font-bold hover:underline transition-all">
-              Se connecter
-            </Link>
-          </p>
-        </div>
-      </div>
     </AuthLayout>
   );
 }
