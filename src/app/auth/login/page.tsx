@@ -16,9 +16,20 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await login({ email, password });
-    if (result) {
-      window.location.href = "/";
+    console.log("--- Tentative de Connexion ---");
+    console.log("Email/Tel:", email);
+    console.log("Password:", password);
+
+    try {
+      const result = await login({ email, password });
+      if (result) {
+        console.log("Connexion RÉUSSIE:", result);
+        window.location.href = "/";
+      } else {
+        console.log("Connexion ÉCHOUÉE (Vérifiez les identifiants)");
+      }
+    } catch (err) {
+      console.error("ERREUR CRITIQUE lors de la connexion:", err);
     }
   };
 
