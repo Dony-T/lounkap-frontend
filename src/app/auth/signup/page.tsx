@@ -10,24 +10,17 @@ import { useAuth } from '@/presentation/hooks/useAuth';
 export default function SignupPage() {
   const { register, isLoading, error } = useAuth();
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
     email: '',
     phone: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("--- Tentative d'Inscription ---");
     console.log("Données transmises:", formData);
-
-    if (formData.password !== formData.confirmPassword) {
-      console.log("ERREUR: Les mots de passe ne correspondent pas");
-      return;
-    }
 
     try {
       const result = await register(formData);
@@ -46,8 +39,8 @@ export default function SignupPage() {
     <AuthLayout>
       <form onSubmit={handleSubmit} className="bg-white rounded-[32px] p-xl shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col gap-md">
         <div className="text-center flex flex-col gap-sm">
-          <h2 className="text-3xl font-bold text-[#0F2747]">Creer mon compte</h2>
-          <p className="text-sm text-slate-grey">Rejoignez la communaute LounKap</p>
+          <h2 className="text-3xl font-bold text-[#0F2747]">Créer mon compte</h2>
+          <p className="text-sm text-slate-grey">Rejoignez la communauté LounKap</p>
         </div>
 
         {error && (
@@ -63,8 +56,8 @@ export default function SignupPage() {
               <User className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey/40" size={18} />
               <input
                 type="text"
-                value={formData.fullName}
-                onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
                 placeholder="Jean Dupont"
                 className="w-full border border-slate-light rounded-2xl pl-[48px] pr-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-grey/30 text-slate text-sm"
                 required
@@ -95,7 +88,7 @@ export default function SignupPage() {
                 type="text"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                placeholder="+225 07 XX XX XX XX"
+                placeholder="+237 6X XX XX XX XX"
                 className="w-full border border-slate-light rounded-2xl pl-[48px] pr-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-grey/30 text-slate text-sm"
                 required
               />
@@ -123,27 +116,6 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-xs">
-            <label className="text-sm font-bold text-[#0F2747] ml-1 uppercase tracking-wider text-[10px]">Confirmer le mot de passe</label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                placeholder="Repetez le mot de passe"
-                className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-grey/30 text-slate text-sm"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-md top-1/2 -translate-y-1/2 text-slate-grey/40"
-              >
-                <Eye size={18} className={showConfirmPassword ? "text-primary" : ""} />
-              </button>
-            </div>
-          </div>
-
           <div className="px-1 py-2">
             <label className="flex items-start gap-sm cursor-pointer group">
               <input type="checkbox" className="mt-1 w-4 h-4 rounded border-slate-light text-primary focus:ring-primary" required />
@@ -158,7 +130,7 @@ export default function SignupPage() {
             className="w-full py-md text-base shadow-lg shadow-primary/20 mt-md"
             isLoading={isLoading}
           >
-            {isLoading ? "Création en cours..." : "Creer mon compte"}
+            {isLoading ? "Création en cours..." : "Créer mon compte"}
           </Button>
 
           <p className="text-center text-sm text-slate-grey mt-md">
