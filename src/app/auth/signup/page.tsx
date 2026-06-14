@@ -24,6 +24,7 @@ export default function SignupPage() {
 
     try {
       const result = await register(formData);
+      console.log(result);
       if (result) {
         console.log("Inscription RÉUSSIE:", result);
         window.location.href = "/";

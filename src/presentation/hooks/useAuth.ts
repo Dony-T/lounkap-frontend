@@ -16,14 +16,25 @@ export const useAuth = () => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log("useAuth: Début de l'exécution du LoginUseCase...");
       const response = await loginUseCase.execute(credentials);
+      
+      console.log("useAuth: Réponse reçue du UseCase:", response);
+
+      if (!response.tokens || !response.tokens.accessToken) {
+        throw new Error("Tokens manquants dans la réponse");
+      }
+
       // Persist tokens
       localStorage.setItem('accessToken', response.tokens.accessToken);
-      localStorage.setItem('refreshToken', response.tokens.refreshToken);
+      localStorage.setItem('refreshToken', response.tokens.refreshToken || '');
       document.cookie = "auth_session=true; path=/";
+      
+      console.log("useAuth: Connexion réussie et tokens stockés");
       return response;
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Une erreur est survenue lors de la connexion');
+      console.error("useAuth: ERREUR CAPTURÉE ->", err);
+      setError(err.response?.data?.message || err.message || 'Une erreur est survenue lors de la connexion');
       return null;
     } finally {
       setIsLoading(false);
@@ -35,12 +46,10 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await registerUseCase.execute(data);
-      // Persist tokens
-      localStorage.setItem('accessToken', response.tokens.accessToken);
-      localStorage.setItem('refreshToken', response.tokens.refreshToken);
-      document.cookie = "auth_session=true; path=/";
+      console.log("REPONSE REGISTER =", response);
       return response;
     } catch (err: any) {
+      console.error("REGISTER ERROR", err);
       setError(err.response?.data?.message || "Une erreur est survenue lors de l'inscription");
       return null;
     } finally {
