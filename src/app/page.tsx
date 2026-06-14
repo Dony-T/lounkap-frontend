@@ -1,53 +1,32 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Plus, UserPlus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, UserPlus, Loader2 } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { TontineCard } from '@/presentation/components/dashboard/TontineCard';
 import { SummarySection } from '@/presentation/components/dashboard/SummarySection';
 import { CreateTontineDrawer } from '@/presentation/components/dashboard/CreateTontineDrawer';
 import { JoinTontineDrawer } from '@/presentation/components/dashboard/JoinTontineDrawer';
-
-const tontines = [
-  {
-    id: '1',
-    type: 'business' as const,
-    title: 'Épargne Entrepreneurs',
-    description: 'Réunion mensuelle pour le financement de projets innovants.',
-    contribution: '50,000 FCFA',
-    frequency: 'Mensuelle',
-    members: { current: 12, total: 20 },
-    role: 'PRESIDENT' as const,
-    code: 'TX-9824-A',
-  },
-  {
-    id: '2',
-    type: 'family' as const,
-    title: 'Cercle Familial',
-    description: 'Tontine restreinte aux membres de la famille Kouamé.',
-    contribution: '25,000 FCFA',
-    frequency: 'Hebdomadaire',
-    members: { current: 8, total: 10 },
-    role: 'MEMBER' as const,
-    code: 'FAM-1234-B',
-  },
-  {
-    id: '3',
-    type: 'realestate' as const,
-    title: 'Projet Immobilier',
-    description: 'Objectif d\'achat de terrains groupés en périphérie.',
-    contribution: '100,000 FCFA',
-    frequency: 'Mensuelle',
-    members: { current: 15, total: 30 },
-    role: 'MEMBER' as const,
-    code: 'PRO-5678-C',
-  },
-];
+import { useTontine } from '@/presentation/hooks/useTontine';
+import { Tontine } from '@/core/domain/entities/Tontine';
 
 export default function Home() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isJoinOpen, setIsJoinOpen] = useState(false);
+  const [tontines, setTontines] = useState<Tontine[]>([]);
+  const { listTontines, isLoading, error } = useTontine();
+
+  const fetchTontines = async () => {
+    const data = await listTontines();
+    if (data) {
+      setTontines(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchTontines();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -76,23 +55,53 @@ export default function Home() {
           </div>
         </header>
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-xl">
-          {tontines.map((tontine, i) => (
-            <TontineCard key={i} {...tontine} />
-          ))}
-        </section>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-md">
+            <Loader2 className="animate-spin text-primary" size={48} />
+            <p className="text-slate-grey font-medium">Chargement de vos tontines...</p>
+          </div>
+        ) : error ? (
+          <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-xl text-center">
+            <p className="text-status-error font-bold">{error}</p>
+            <Button variant="secondary" className="mt-md" onClick={fetchTontines}>
+              Réessayer
+            </Button>
+          </div>
+        ) : tontines.length === 0 ? (
+          <div className="bg-slate-light/30 border border-dashed border-slate-light rounded-[32px] p-20 text-center flex flex-col items-center gap-lg">
+            <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-slate-grey shadow-sm">
+              <Plus size={32} />
+            </div>
+            <div className="flex flex-col gap-xs">
+              <h3 className="text-xl font-bold text-slate">Aucune tontine trouvée</h3>
+              <p className="text-slate-grey max-w-xs mx-auto">Commencez par créer votre propre tontine ou rejoignez-en une existante.</p>
+            </div>
+            <div className="flex gap-md mt-md">
+              <Button variant="secondary" onClick={() => setIsJoinOpen(true)}>Rejoindre</Button>
+              <Button onClick={() => setIsCreateOpen(true)}>Créer une tontine</Button>
+            </div>
+          </div>
+        ) : (
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+            {tontines.map((tontine) => (
+              <TontineCard key={tontine.id} {...tontine} />
+            ))}
+          </section>
+        )}
 
-        <SummarySection />
+        <SummarySection totalTontines={tontines.length} />
       </div>
 
       <CreateTontineDrawer
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
+        onSuccess={fetchTontines}
       />
 
       <JoinTontineDrawer
         isOpen={isJoinOpen}
         onClose={() => setIsJoinOpen(false)}
+        onSuccess={fetchTontines}
       />
     </DashboardLayout>
   );

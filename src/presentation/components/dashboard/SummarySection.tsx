@@ -1,7 +1,11 @@
 import React from 'react';
 import { TrendingUp } from 'lucide-react';
 
-export const SummarySection = () => {
+interface SummarySectionProps {
+  totalTontines: number;
+}
+
+export const SummarySection = ({ totalTontines }: SummarySectionProps) => {
   return (
     <div className="card-summary flex flex-col md:flex-row justify-between items-center gap-xl relative overflow-hidden">
       {/* Decorative gradient background element */}
@@ -9,7 +13,7 @@ export const SummarySection = () => {
 
       <div className="flex flex-col gap-sm flex-1">
         <h2 className="text-3xl font-bold tracking-tight">Total en cours d'épargne</h2>
-        <p className="text-body-md text-inverse-on-surface/70">Vous participez à 3 tontines actives.</p>
+        <p className="text-body-md text-inverse-on-surface/70">Vous participez à {totalTontines} {totalTontines > 1 ? 'tontines actives' : 'tontine active'}.</p>
 
         <div className="flex flex-wrap gap-xxl mt-lg">
           <div className="flex flex-col gap-1">

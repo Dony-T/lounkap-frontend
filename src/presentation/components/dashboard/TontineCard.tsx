@@ -4,27 +4,30 @@ import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { cn } from '@/presentation/utils/cn';
 import Link from 'next/link';
 
+import { TontineType, TontineRole } from '@/core/domain/entities/Tontine';
+
 interface TontineCardProps {
   id: string;
-  type: 'business' | 'family' | 'realestate';
+  type: TontineType;
   title: string;
   description: string;
   contribution: string;
   frequency: string;
   members: { current: number; total: number };
-  role: 'PRESIDENT' | 'MEMBER';
+  role: TontineRole;
   code: string;
 }
 
-const icons = {
+const icons: Record<TontineType, { icon: any, bg: string, color: string }> = {
   business: { icon: Briefcase, bg: 'bg-primary/10', color: 'text-primary' },
   family: { icon: Users, bg: 'bg-secondary/10', color: 'text-secondary' },
   realestate: { icon: Home, bg: 'bg-status-error/10', color: 'text-status-error' },
+  other: { icon: Briefcase, bg: 'bg-slate-light', color: 'text-slate-grey' },
 };
 
 export const TontineCard = ({ id, type, title, description, contribution, frequency, members, role, code }: TontineCardProps) => {
-  const config = icons[type];
-  const progress = (members.current / members.total) * 100;
+  const config = icons[type] || icons.other;
+  const progress = members.total > 0 ? (members.current / members.total) * 100 : 0;
 
   return (
     <Link href={`/tontines/${id}`} className="block">
@@ -58,7 +61,7 @@ export const TontineCard = ({ id, type, title, description, contribution, freque
               </div>
               <div className="h-1.5 w-full bg-slate-light rounded-full overflow-hidden">
                 <div
-                  className={cn("h-full transition-all duration-500", role === 'PRESIDENT' ? "bg-primary" : "bg-slate-grey")}
+                  className={cn("h-full transition-all duration-500", role === 'PRESIDENT' || role === 'ADMIN' ? "bg-primary" : "bg-slate-grey")}
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -70,7 +73,7 @@ export const TontineCard = ({ id, type, title, description, contribution, freque
               <span className="text-[9px] uppercase tracking-widest text-slate-grey font-bold">Rôle</span>
               <span className={cn(
                 "badge text-[9px]",
-                role === 'PRESIDENT' ? "bg-secondary/10 text-secondary" : "bg-slate-light/50 text-slate-grey"
+                (role === 'PRESIDENT' || role === 'ADMIN') ? "bg-secondary/10 text-secondary" : "bg-slate-light/50 text-slate-grey"
               )}>
                 {role}
               </span>
