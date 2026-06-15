@@ -3,14 +3,21 @@ import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { Banknote, Calendar, Wallet, Users } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 
-const stats = [
-  { label: 'Cotisation', value: '100,000 FCFA', icon: Banknote },
-  { label: 'Fréquence', value: 'Mensuelle', icon: Calendar },
-  { label: 'Cagnotte Totale', value: '1,500,000 FCFA', icon: Wallet },
-  { label: 'Membres', value: '15/30 actifs', icon: Users },
-];
+interface StatCardsProps {
+  amount: number | string;
+  frequency: string;
+  maxMembers: number;
+  currentMembers?: number;
+}
 
-export const StatCards = () => {
+export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }: StatCardsProps) => {
+  const stats = [
+    { label: 'Cotisation', value: `${typeof amount === 'number' ? amount.toLocaleString() : amount} FCFA`, icon: Banknote },
+    { label: 'Fréquence', value: frequency, icon: Calendar },
+    { label: 'Cagnotte Totale', value: `${(Number(amount) * maxMembers).toLocaleString()} FCFA`, icon: Wallet },
+    { label: 'Membres', value: `${currentMembers}/${maxMembers} actifs`, icon: Users },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
       {stats.map((stat, i) => (

@@ -3,6 +3,8 @@ import { ChevronLeft, Copy, UserPlus } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { cn } from '@/presentation/utils/cn';
 
+import Link from 'next/link';
+
 interface DetailHeaderProps {
   title: string;
   code: string;
@@ -15,9 +17,9 @@ export const DetailHeader = ({ title, code }: DetailHeaderProps) => {
     <div className="flex flex-col gap-lg border-b border-slate-light bg-background sticky top-0 z-20 pt-xxl">
       <div className="flex justify-between items-center px-base">
         <div className="flex items-center gap-md">
-          <button className="w-10 h-10 rounded-xl bg-white border border-slate-light flex items-center justify-center text-slate hover:bg-slate-light/10 transition-colors">
+          <Link href="/" className="w-10 h-10 rounded-xl bg-white border border-slate-light flex items-center justify-center text-slate hover:bg-slate-light/10 transition-colors">
             <ChevronLeft size={20} />
-          </button>
+          </Link>
           <div className="flex items-center gap-sm">
             <h1 className="text-3xl font-bold text-slate tracking-tight">{title}</h1>
             <span className="badge-success">Active</span>

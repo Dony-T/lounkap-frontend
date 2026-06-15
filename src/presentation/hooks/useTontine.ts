@@ -55,5 +55,18 @@ export const useTontine = () => {
     }
   };
 
-  return { createTontine, listTontines, joinTontine, isLoading, error };
+  const getTontineById = async (id: string): Promise<Tontine | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getById(id);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors du chargement de la tontine');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { createTontine, listTontines, joinTontine, getTontineById, isLoading, error };
 };
