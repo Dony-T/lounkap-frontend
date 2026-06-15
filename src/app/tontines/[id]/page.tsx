@@ -8,6 +8,7 @@ import { StatCards } from '@/presentation/components/tontine/StatCards';
 import { CurrentCycle } from '@/presentation/components/tontine/CurrentCycle';
 import { TransactionList } from '@/presentation/components/tontine/TransactionList';
 import { InfoCards } from '@/presentation/components/tontine/InfoCards';
+import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { Tontine } from '@/core/domain/entities/Tontine';
 import { Loader2 } from 'lucide-react';
@@ -15,18 +16,23 @@ import { Button } from '@/presentation/components/ui/Button';
 
 export default function TontineDetailPage() {
   const { id } = useParams();
-  const { getTontineById, isLoading, error } = useTontine();
+  const { getTontineById, getMembers, isLoading, error } = useTontine();
   const [tontine, setTontine] = useState<Tontine | null>(null);
+  const [members, setMembers] = useState<any[]>([]);
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
-  const fetchTontine = async () => {
+  const fetchData = async () => {
     if (typeof id === 'string') {
-      const data = await getTontineById(id);
-      if (data) setTontine(data);
+      const tontineData = await getTontineById(id);
+      if (tontineData) setTontine(tontineData);
+
+      const memberList = await getMembers(id);
+      if (memberList) setMembers(memberList);
     }
   };
 
   useEffect(() => {
-    fetchTontine();
+    fetchData();
   }, [id]);
 
   if (isLoading) {
@@ -46,7 +52,7 @@ export default function TontineDetailPage() {
         <div className="flex flex-col items-center justify-center h-[60vh] gap-lg">
           <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-xl text-center max-w-md">
             <p className="text-status-error font-bold">{error || "Tontine non trouvée"}</p>
-            <Button variant="secondary" className="mt-md" onClick={fetchTontine}>
+            <Button variant="secondary" className="mt-md" onClick={fetchData}>
               Réessayer
             </Button>
           </div>
@@ -61,6 +67,7 @@ export default function TontineDetailPage() {
         <DetailHeader
           title={tontine.title || tontine.name || "Tontine sans nom"}
           code={tontine.code || tontine.inviteCode || "N/A"}
+          onAddMember={() => setIsAddMemberOpen(true)}
         />
 
         <div className="flex flex-col gap-xl">
@@ -68,7 +75,7 @@ export default function TontineDetailPage() {
             amount={tontine.amount || tontine.contribution}
             frequency={tontine.frequency}
             maxMembers={tontine.maxMembers || (tontine as any).max_members || 10}
-            currentMembers={tontine.members?.current || (tontine as any).currentMembers || 1}
+            currentMembers={members.length || tontine.members?.current || 1}
           />
 
           <div className="flex flex-col lg:flex-row gap-xl items-start">
@@ -81,6 +88,13 @@ export default function TontineDetailPage() {
           </div>
         </div>
       </div>
+
+      <AddMemberDrawer
+        isOpen={isAddMemberOpen}
+        onClose={() => setIsAddMemberOpen(false)}
+        tontineId={tontine.id}
+        onSuccess={fetchData}
+      />
     </DashboardLayout>
   );
 }

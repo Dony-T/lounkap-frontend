@@ -8,11 +8,12 @@ import Link from 'next/link';
 interface DetailHeaderProps {
   title: string;
   code: string;
+  onAddMember?: () => void;
 }
 
 const tabs = ['Aperçu', 'Membres', 'Cycles', 'Paiements', 'Payouts'];
 
-export const DetailHeader = ({ title, code }: DetailHeaderProps) => {
+export const DetailHeader = ({ title, code, onAddMember }: DetailHeaderProps) => {
   return (
     <div className="flex flex-col gap-lg border-b border-slate-light bg-background sticky top-0 z-20 pt-xxl">
       <div className="flex justify-between items-center px-base">
@@ -33,7 +34,7 @@ export const DetailHeader = ({ title, code }: DetailHeaderProps) => {
               <Copy size={16} />
             </button>
           </div>
-          <Button className="gap-sm">
+          <Button className="gap-sm" onClick={onAddMember}>
             <UserPlus size={18} />
             Ajouter un membre
           </Button>
