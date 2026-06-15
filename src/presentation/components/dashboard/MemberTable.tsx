@@ -10,56 +10,40 @@ interface Member {
   role: 'PRESIDENT' | 'TREASURER' | 'MEMBER' | 'SECRETARY';
   status: 'ACTIVE' | 'INACTIVE';
   joinDate: string;
-  avatarColor: string;
+  avatarColor?: string;
 }
 
-const members: Member[] = [
-  {
-    id: '1',
-    name: 'Jean Dupont',
-    email: 'jean.dupont@email.com',
-    role: 'PRESIDENT',
-    status: 'ACTIVE',
-    joinDate: '15 Janv. 2024',
-    avatarColor: 'bg-purple-100 text-purple-600',
-  },
-  {
-    id: '2',
-    name: 'Amina Kouamé',
-    email: 'a.kouame@finance.ci',
-    role: 'TREASURER',
-    status: 'ACTIVE',
-    joinDate: '16 Janv. 2024',
-    avatarColor: 'bg-blue-100 text-blue-600',
-  },
-  {
-    id: '3',
-    name: 'Marc Penda',
-    email: 'marc.penda@techhub.net',
-    role: 'MEMBER',
-    status: 'ACTIVE',
-    joinDate: '20 Janv. 2024',
-    avatarColor: 'bg-slate-100 text-slate-600',
-  },
-  {
-    id: '4',
-    name: 'Catherine Leroi',
-    email: 'c.leroi@design.fr',
-    role: 'MEMBER',
-    status: 'ACTIVE',
-    joinDate: '22 Janv. 2024',
-    avatarColor: 'bg-amber-100 text-amber-600',
-  },
-];
+interface MemberTableProps {
+  members: Member[];
+  isLoading?: boolean;
+}
 
 const roleConfig = {
-  PRESIDENT: { variant: 'primary' as const, label: 'PRESIDENT' },
-  TREASURER: { variant: 'secondary' as const, label: 'TREASURER' },
-  MEMBER: { variant: 'neutral' as const, label: 'MEMBER' },
-  SECRETARY: { variant: 'info' as const, label: 'SECRETARY' },
+  PRESIDENT: { variant: 'primary' as const, label: 'PRÉSIDENT' },
+  TREASURER: { variant: 'secondary' as const, label: 'TRÉSORIER' },
+  MEMBER: { variant: 'neutral' as const, label: 'MEMBRE' },
+  SECRETARY: { variant: 'info' as const, label: 'SECRÉTAIRE' },
+  ADMIN: { variant: 'primary' as const, label: 'ADMIN' },
 };
 
-export const MemberTable = () => {
+export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-3xl shadow-air p-xxl flex flex-col items-center justify-center gap-md border border-slate-light/50">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-slate-grey font-medium">Chargement des membres...</p>
+      </div>
+    );
+  }
+
+  if (members.length === 0) {
+    return (
+      <div className="bg-white rounded-3xl shadow-air p-xxl text-center border border-slate-light/50">
+        <p className="text-slate-grey">Aucun membre trouvé pour cette tontine.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-3xl shadow-air overflow-hidden border border-slate-light/50">
       <div className="overflow-x-auto">
@@ -78,30 +62,39 @@ export const MemberTable = () => {
               <tr key={member.id} className="hover:bg-slate-light/5 transition-colors group">
                 <td className="px-lg py-md">
                   <div className="flex items-center gap-md">
-                    <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0", member.avatarColor)}>
-                      {member.name.split(' ').map(n => n[0]).join('')}
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0",
+                      member.avatarColor || "bg-slate-100 text-slate-600"
+                    )}>
+                      {member.name ? member.name.split(' ').map(n => n[0]).join('') : '?'}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-slate leading-tight">{member.name}</span>
-                      <span className="text-xs text-slate-grey">{member.email}</span>
+                      <span className="text-sm font-bold text-slate leading-tight">{member.name || 'Inconnu'}</span>
+                      <span className="text-xs text-slate-grey">{member.email || 'Pas d\'email'}</span>
                     </div>
                   </div>
                 </td>
                 <td className="px-lg py-md text-center">
-                  <Badge variant={roleConfig[member.role].variant}>
-                    {roleConfig[member.role].label}
+                  <Badge variant={(roleConfig[member.role as keyof typeof roleConfig] || roleConfig.MEMBER).variant}>
+                    {(roleConfig[member.role as keyof typeof roleConfig] || roleConfig.MEMBER).label}
                   </Badge>
                 </td>
                 <td className="px-lg py-md text-center">
                   <div className="flex items-center justify-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-status-success" />
-                    <span className="text-[10px] font-bold text-status-success uppercase tracking-widest">
-                      {member.status}
+                    <div className={cn(
+                      "w-1.5 h-1.5 rounded-full",
+                      member.status === 'ACTIVE' ? "bg-status-success" : "bg-slate-grey"
+                    )} />
+                    <span className={cn(
+                      "text-[10px] font-bold uppercase tracking-widest",
+                      member.status === 'ACTIVE' ? "text-status-success" : "text-slate-grey"
+                    )}>
+                      {member.status || 'INCONNU'}
                     </span>
                   </div>
                 </td>
                 <td className="px-lg py-md">
-                  <span className="text-sm font-medium text-slate-grey">{member.joinDate}</span>
+                  <span className="text-sm font-medium text-slate-grey">{member.joinDate || 'N/A'}</span>
                 </td>
                 <td className="px-lg py-md text-right">
                   <button className="p-sm text-slate-grey hover:text-slate transition-colors">
@@ -114,32 +107,11 @@ export const MemberTable = () => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* Pagination (statique pour l'instant) */}
       <div className="px-lg py-md border-t border-slate-light/30 flex items-center justify-between">
         <p className="text-xs text-slate-grey">
-          Affichage de <span className="font-bold text-slate">1 à 4</span> sur <span className="font-bold text-slate">12</span> membres
+          Affichage de <span className="font-bold text-slate">1 à {members.length}</span> sur <span className="font-bold text-slate">{members.length}</span> membres
         </p>
-        <div className="flex items-center gap-xs">
-          <button className="p-xs rounded-lg border border-slate-light text-slate-grey hover:bg-slate-light/10 transition-all">
-            <ChevronLeft size={16} />
-          </button>
-          {[1, 2, 3].map((page) => (
-            <button
-              key={page}
-              className={cn(
-                "w-8 h-8 rounded-lg text-xs font-bold transition-all border",
-                page === 1
-                  ? "bg-[#8b701c] border-[#8b701c] text-white shadow-md shadow-primary/20"
-                  : "border-slate-light text-slate-grey hover:bg-slate-light/10"
-              )}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="p-xs rounded-lg border border-slate-light text-slate-grey hover:bg-slate-light/10 transition-all">
-            <ChevronRight size={16} />
-          </button>
-        </div>
       </div>
     </div>
   );

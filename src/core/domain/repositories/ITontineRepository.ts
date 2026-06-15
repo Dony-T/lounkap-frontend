@@ -8,4 +8,6 @@ export interface ITontineRepository {
   update(id: string, data: UpdateTontineDTO): Promise<Tontine>;
   delete(id: string): Promise<void>;
   leave(id: string): Promise<void>;
+  getMembers(tontineId: string): Promise<any[]>;
+  addMember(tontineId: string, data: { emailOrPhone: string; role: string }): Promise<void>;
 }

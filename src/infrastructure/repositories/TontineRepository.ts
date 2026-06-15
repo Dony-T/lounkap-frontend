@@ -52,4 +52,13 @@ export class TontineRepository implements ITontineRepository {
   async leave(id: string): Promise<void> {
     await apiClient.delete(`/tontines/${id}/leave`);
   }
+
+  async getMembers(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get<any>(`/tontines/${tontineId}/members`);
+    return response.data.data || [];
+  }
+
+  async addMember(tontineId: string, data: { emailOrPhone: string; role: string }): Promise<void> {
+    await apiClient.post(`/tontines/${tontineId}/members`, data);
+  }
 }

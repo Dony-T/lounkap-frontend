@@ -1,41 +1,93 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, UserPlus, Shield, UserCheck, BarChart3 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, UserPlus, Shield, UserCheck, BarChart3, AlertCircle } from 'lucide-react';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { Button } from '@/presentation/components/ui/Button';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { InfoCard } from '@/presentation/components/dashboard/InfoCard';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
+import { useTontine } from '@/presentation/hooks/useTontine';
 
 export default function MembersPage() {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [members, setMembers] = useState<any[]>([]);
+  const [selectedTontineId, setSelectedTontineId] = useState<string | null>(null);
+  const [tontines, setTontines] = useState<any[]>([]);
+
+  const { listTontines, getMembers, isLoading, error } = useTontine();
+
+  const loadData = async () => {
+    const tontineList = await listTontines();
+    if (tontineList && tontineList.length > 0) {
+      setTontines(tontineList);
+      // Par défaut, on prend la première tontine
+      const firstId = tontineList[0].id;
+      setSelectedTontineId(firstId);
+      const memberList = await getMembers(firstId);
+      if (memberList) setMembers(memberList);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleTontineChange = async (id: string) => {
+    setSelectedTontineId(id);
+    const memberList = await getMembers(id);
+    if (memberList) setMembers(memberList);
+  };
 
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-xl">
         {/* Header Actions */}
-        <div className="flex justify-between items-center">
-          <div className="relative w-80">
-            <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey" size={18} />
-            <input
-              type="text"
-              placeholder="Rechercher un membre..."
-              className="w-full bg-white border border-slate-light rounded-2xl pl-[48px] pr-md py-sm text-sm focus:outline-none focus:border-primary transition-colors placeholder:text-slate-grey/50 shadow-sm"
-            />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+          <div className="flex flex-col gap-sm w-full md:w-auto">
+            <label className="text-[10px] font-bold text-slate-grey uppercase tracking-widest ml-1">Sélectionner une tontine</label>
+            <select
+              className="bg-white border border-slate-light rounded-2xl px-md py-[10px] text-sm focus:outline-none focus:border-primary transition-colors shadow-sm min-w-[240px]"
+              value={selectedTontineId || ''}
+              onChange={(e) => handleTontineChange(e.target.value)}
+            >
+              {tontines.map(t => (
+                <option key={t.id} value={t.id}>{t.name || t.title}</option>
+              ))}
+              {tontines.length === 0 && <option value="">Aucune tontine</option>}
+            </select>
           </div>
-          <Button
-            className="gap-sm py-[10px]"
-            onClick={() => setIsAddMemberOpen(true)}
-          >
-            <UserPlus size={18} />
-            Ajouter un membre
-          </Button>
+
+          <div className="flex gap-md w-full md:w-auto">
+            <div className="relative flex-1 md:w-64">
+              <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey" size={18} />
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                className="w-full bg-white border border-slate-light rounded-2xl pl-[48px] pr-md py-[10px] text-sm focus:outline-none focus:border-primary transition-colors shadow-sm"
+              />
+            </div>
+            <Button
+              className="gap-sm py-[10px]"
+              onClick={() => setIsAddMemberOpen(true)}
+              disabled={!selectedTontineId}
+            >
+              <UserPlus size={18} />
+              Ajouter
+            </Button>
+          </div>
         </div>
+
+        {error && (
+          <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-md flex items-center gap-md text-status-error">
+            <AlertCircle size={20} />
+            <p className="text-sm font-medium">{error}</p>
+          </div>
+        )}
 
         {/* Member Table Section */}
         <section>
-          <MemberTable />
+          <MemberTable members={members} isLoading={isLoading} />
         </section>
 
         {/* Info Cards Section */}
@@ -61,6 +113,8 @@ export default function MembersPage() {
       <AddMemberDrawer
         isOpen={isAddMemberOpen}
         onClose={() => setIsAddMemberOpen(false)}
+        tontineId={selectedTontineId || ''}
+        onSuccess={() => selectedTontineId && handleTontineChange(selectedTontineId)}
       />
     </DashboardLayout>
   );

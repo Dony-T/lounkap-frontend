@@ -68,5 +68,32 @@ export const useTontine = () => {
     }
   };
 
-  return { createTontine, listTontines, joinTontine, getTontineById, isLoading, error };
+  const getMembers = async (tontineId: string): Promise<any[] | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getMembers(tontineId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors du chargement des membres');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const addMember = async (tontineId: string, data: { emailOrPhone: string; role: string }): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.addMember(tontineId, data);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de l'ajout du membre");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { createTontine, listTontines, joinTontine, getTontineById, getMembers, addMember, isLoading, error };
 };

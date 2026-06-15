@@ -1,18 +1,24 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { X, Search, Link as LinkIcon, UserPlus } from 'lucide-react';
+import { X, Search, Link as LinkIcon, UserPlus, Loader2 } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { Input } from '@/presentation/components/ui/Input';
 import { cn } from '@/presentation/utils/cn';
+import { useTontine } from '@/presentation/hooks/useTontine';
 
 interface AddMemberDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  tontineId: string;
+  onSuccess?: () => void;
 }
 
-export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
+export const AddMemberDrawer = ({ isOpen, onClose, tontineId, onSuccess }: AddMemberDrawerProps) => {
   const [isRendered, setIsRendered] = useState(false);
+  const [identifier, setIdentifier] = useState('');
+  const [role, setRole] = useState('MEMBER');
+  const { addMember, isLoading, error } = useTontine();
 
   useEffect(() => {
     if (isOpen) {
@@ -20,10 +26,28 @@ export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
-      const timer = setTimeout(() => setIsRendered(false), 300);
+      const timer = setTimeout(() => {
+        setIsRendered(false);
+        setIdentifier('');
+        setRole('MEMBER');
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  const handleSubmit = async () => {
+    if (!identifier) return;
+
+    const success = await addMember(tontineId, {
+      emailOrPhone: identifier,
+      role: role
+    });
+
+    if (success) {
+      onSuccess?.();
+      onClose();
+    }
+  };
 
   if (!isRendered && !isOpen) return null;
 
@@ -59,6 +83,12 @@ export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-lg flex flex-col gap-xl">
+          {error && (
+            <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-md text-status-error text-sm font-medium">
+              {error}
+            </div>
+          )}
+
           <p className="text-sm text-slate-grey leading-relaxed">
             Ajoutez un membre directement à cette tontine en utilisant son adresse email ou son numéro de téléphone Lounkap.
           </p>
@@ -73,6 +103,8 @@ export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
                 type="text"
                 placeholder="nom@email.com ou +237..."
                 className="w-full border border-slate-light rounded-2xl pl-[48px] pr-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 placeholder:text-slate-grey/30 text-slate"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
               />
             </div>
           </div>
@@ -81,11 +113,15 @@ export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
             <label className="text-sm font-medium text-slate-grey ml-1 uppercase tracking-wider text-[11px]">
               Rôle attribué
             </label>
-            <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 text-slate bg-white appearance-none cursor-pointer">
-              <option>Membre (Défaut)</option>
-              <option>Président</option>
-              <option>Trésorier</option>
-              <option>Secrétaire</option>
+            <select
+              className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10 text-slate bg-white appearance-none cursor-pointer"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <option value="MEMBER">Membre (Défaut)</option>
+              <option value="PRESIDENT">Président</option>
+              <option value="TREASURER">Trésorier</option>
+              <option value="SECRETARY">Secrétaire</option>
             </select>
           </div>
 
@@ -100,9 +136,13 @@ export const AddMemberDrawer = ({ isOpen, onClose }: AddMemberDrawerProps) => {
 
         {/* Footer */}
         <div className="p-lg border-t border-slate-light/30">
-          <Button className="w-full gap-sm py-md shadow-md shadow-primary/20">
-            <UserPlus size={18} />
-            Ajouter au cercle
+          <Button
+            className="w-full gap-sm py-md shadow-md shadow-primary/20"
+            onClick={handleSubmit}
+            disabled={isLoading || !identifier}
+          >
+            {isLoading ? <Loader2 className="animate-spin" size={18} /> : <UserPlus size={18} />}
+            {isLoading ? 'Ajout...' : 'Ajouter au cercle'}
           </Button>
         </div>
       </div>
