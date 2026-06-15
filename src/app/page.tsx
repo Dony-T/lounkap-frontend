@@ -67,7 +67,7 @@ export default function Home() {
               Réessayer
             </Button>
           </div>
-        ) : tontines.length === 0 ? (
+        ) : Array.isArray(tontines) && tontines.length === 0 ? (
           <div className="bg-slate-light/30 border border-dashed border-slate-light rounded-[32px] p-20 text-center flex flex-col items-center gap-lg">
             <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-slate-grey shadow-sm">
               <Plus size={32} />
@@ -81,15 +81,19 @@ export default function Home() {
               <Button onClick={() => setIsCreateOpen(true)}>Créer une tontine</Button>
             </div>
           </div>
-        ) : (
+        ) : Array.isArray(tontines) ? (
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-xl">
             {tontines.map((tontine) => (
               <TontineCard key={tontine.id} {...tontine} />
             ))}
           </section>
+        ) : (
+          <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-xl text-center">
+            <p className="text-status-error font-bold">Format de données invalide reçu du serveur</p>
+          </div>
         )}
 
-        <SummarySection totalTontines={tontines.length} />
+        <SummarySection totalTontines={Array.isArray(tontines) ? tontines.length : 0} />
       </div>
 
       <CreateTontineDrawer
