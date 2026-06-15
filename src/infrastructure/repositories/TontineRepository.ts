@@ -4,14 +4,30 @@ import apiClient from '../api/apiClient';
 
 export class TontineRepository implements ITontineRepository {
   async create(data: CreateTontineDTO): Promise<Tontine> {
+    console.log("TontineRepository: Creating tontine with data:", data);
     const response = await apiClient.post<any>('/tontines', data);
+    console.log("TontineRepository: Creation response:", response.data);
     return response.data.data;
   }
 
   async listAll(): Promise<Tontine[]> {
+    console.log("TontineRepository: Fetching all tontines...");
     const response = await apiClient.get<any>('/tontines');
-    // The API wraps the array in a 'data' field
-    return response.data.data || [];
+    console.log("TontineRepository: Raw response data:", response.data);
+
+    // Check if the structure is response.data.data.tontines or just response.data.data
+    const apiData = response.data.data;
+
+    if (Array.isArray(apiData)) {
+      return apiData;
+    }
+
+    if (apiData && Array.isArray(apiData.tontines)) {
+      return apiData.tontines;
+    }
+
+    console.warn("TontineRepository: Unexpected data structure", apiData);
+    return [];
   }
 
   async join(code: string): Promise<Tontine> {

@@ -18,7 +18,7 @@ export const CreateTontineDrawer = ({ isOpen, onClose, onSuccess }: CreateTontin
   const { createTontine, isLoading, error } = useTontine();
 
   const [formData, setFormData] = useState({
-    title: '',
+    name: '',
     description: '',
     contribution: '',
     frequency: 'Mensuelle',
@@ -34,7 +34,7 @@ export const CreateTontineDrawer = ({ isOpen, onClose, onSuccess }: CreateTontin
       const timer = setTimeout(() => {
         setIsRendered(false);
         setFormData({
-          title: '',
+          name: '',
           description: '',
           contribution: '',
           frequency: 'Mensuelle',
@@ -46,17 +46,29 @@ export const CreateTontineDrawer = ({ isOpen, onClose, onSuccess }: CreateTontin
   }, [isOpen]);
 
   const handleSubmit = async () => {
-    if (!formData.title || !formData.contribution) return;
+    console.log("CreateTontineDrawer: handleSubmit triggered", formData);
+    if (!formData.name || !formData.contribution) return;
 
-    const result = await createTontine({
-      title: formData.title,
+    // Mapping frequencies to backend values
+    const frequencyMap: Record<string, 'WEEKLY' | 'MONTHLY'> = {
+      'Hebdomadaire': 'WEEKLY',
+      'Mensuelle': 'MONTHLY',
+      'Trimestrielle': 'MONTHLY' // Defaulting Trimestrielle to MONTHLY since not supported
+    };
+
+    const payload: any = {
+      name: formData.name,
       description: formData.description,
-      contribution: Number(formData.contribution),
-      frequency: formData.frequency,
+      amount: Number(formData.contribution),
+      frequency: frequencyMap[formData.frequency] || 'MONTHLY',
       maxMembers: Number(formData.maxMembers),
-    });
+    };
+
+    console.log("CreateTontineDrawer: Calling createTontine with payload", payload);
+    const result = await createTontine(payload);
 
     if (result) {
+      console.log("CreateTontineDrawer: Success!", result);
       onSuccess?.();
       onClose();
     }
@@ -105,8 +117,8 @@ export const CreateTontineDrawer = ({ isOpen, onClose, onSuccess }: CreateTontin
           <Input
             label="Nom de la tontine"
             placeholder="Ex: Famille & Amis 2024"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
 
           <div className="flex flex-col gap-xs">
@@ -178,7 +190,7 @@ export const CreateTontineDrawer = ({ isOpen, onClose, onSuccess }: CreateTontin
           <Button
             className="w-full gap-sm py-md shadow-md shadow-primary/20"
             onClick={handleSubmit}
-            disabled={isLoading || !formData.title || !formData.contribution}
+            disabled={isLoading || !formData.name || !formData.contribution}
           >
             {isLoading ? (
               <Loader2 className="animate-spin" size={18} />

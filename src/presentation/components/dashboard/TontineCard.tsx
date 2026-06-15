@@ -25,9 +25,35 @@ const icons: Record<TontineType, { icon: any, bg: string, color: string }> = {
   other: { icon: Briefcase, bg: 'bg-slate-light', color: 'text-slate-grey' },
 };
 
-export const TontineCard = ({ id, type, title, description, contribution, frequency, members, role, code }: TontineCardProps) => {
-  const config = icons[type] || icons.other;
-  const progress = members.total > 0 ? (members.current / members.total) * 100 : 0;
+export const TontineCard = (props: any) => {
+  // Defensive mapping to handle various backend response formats
+  const {
+    id,
+    type = 'other',
+    name,
+    title,
+    description,
+    contribution,
+    amount,
+    frequency,
+    members,
+    maxMembers,
+    currentMembers,
+    role = 'MEMBER',
+    code,
+    inviteCode
+  } = props;
+
+  const displayTitle = name || title || "Sans titre";
+  const displayAmount = amount || contribution || "0";
+  const displayCode = inviteCode || code || "N/A";
+
+  // Calculate members count based on common backend field names
+  const currentCount = members?.current || currentMembers || 1;
+  const totalCount = members?.total || maxMembers || 10;
+
+  const config = icons[type as TontineType] || icons.other;
+  const progress = totalCount > 0 ? (currentCount / totalCount) * 100 : 0;
 
   return (
     <Link href={`/tontines/${id}`} className="block">
@@ -41,14 +67,16 @@ export const TontineCard = ({ id, type, title, description, contribution, freque
           </div>
 
           <div className="flex flex-col gap-xs">
-            <h3 className="text-2xl font-bold text-slate tracking-tight group-hover:text-primary transition-colors">{title}</h3>
+            <h3 className="text-2xl font-bold text-slate tracking-tight group-hover:text-primary transition-colors">{displayTitle}</h3>
             <p className="text-body-sm text-slate-grey line-clamp-2 leading-relaxed">{description}</p>
           </div>
 
           <div className="flex flex-col gap-sm pt-md border-t border-slate-light/50">
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-grey font-medium">Cotisation</span>
-              <span className="text-lg font-bold mono text-primary tracking-tight">{contribution}</span>
+              <span className="text-lg font-bold mono text-primary tracking-tight">
+                {typeof displayAmount === 'number' ? displayAmount.toLocaleString() : displayAmount} FCFA
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-grey font-medium">Fréquence</span>
@@ -57,7 +85,7 @@ export const TontineCard = ({ id, type, title, description, contribution, freque
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-grey font-medium">Membres</span>
-                <span className="font-bold text-slate">{members.current}/{members.total}</span>
+                <span className="font-bold text-slate">{currentCount}/{totalCount}</span>
               </div>
               <div className="h-1.5 w-full bg-slate-light rounded-full overflow-hidden">
                 <div
@@ -80,7 +108,7 @@ export const TontineCard = ({ id, type, title, description, contribution, freque
             </div>
             <div className="flex flex-col gap-1 items-end">
               <span className="text-[9px] uppercase tracking-widest text-slate-grey font-bold">Code</span>
-              <span className="text-xs font-bold mono text-secondary">{code}</span>
+              <span className="text-xs font-bold mono text-secondary">{displayCode}</span>
             </div>
           </div>
         </CardContent>

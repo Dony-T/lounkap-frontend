@@ -21,10 +21,10 @@ export interface Tontine {
 }
 
 export interface CreateTontineDTO {
-  title: string;
+  name: string;
   description: string;
-  contribution: number;
-  frequency: string;
+  amount: number;
+  frequency: 'WEEKLY' | 'MONTHLY';
   maxMembers: number;
 }
 

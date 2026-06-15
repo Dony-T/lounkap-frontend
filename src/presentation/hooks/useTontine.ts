@@ -18,8 +18,10 @@ export const useTontine = () => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log("useTontine: Sending data to API ->", data);
       return await createTontineUseCase.execute(data);
     } catch (err: any) {
+      console.error("useTontine: API Error ->", err.response?.data);
       setError(err.response?.data?.message || 'Erreur lors de la création de la tontine');
       return null;
     } finally {

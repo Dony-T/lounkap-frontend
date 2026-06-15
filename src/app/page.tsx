@@ -19,7 +19,8 @@ export default function Home() {
 
   const fetchTontines = async () => {
     const data = await listTontines();
-    if (data) {
+    console.log("Dashboard: Data received from hook:", data);
+    if (data !== null) {
       setTontines(data);
     }
   };
@@ -72,9 +73,9 @@ export default function Home() {
             <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center text-slate-grey shadow-sm">
               <Plus size={32} />
             </div>
-            <div className="flex flex-col gap-xs">
+            <div className="flex flex-col gap-xs w-full max-w-md mx-auto">
               <h3 className="text-xl font-bold text-slate">Aucune tontine trouvée</h3>
-              <p className="text-slate-grey max-w-xs mx-auto">Commencez par créer votre propre tontine ou rejoignez-en une existante.</p>
+              <p className="text-slate-grey leading-relaxed">Commencez par créer votre propre tontine ou rejoignez-en une existante.</p>
             </div>
             <div className="flex gap-md mt-md">
               <Button variant="secondary" onClick={() => setIsJoinOpen(true)}>Rejoindre</Button>
