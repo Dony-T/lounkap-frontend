@@ -27,6 +27,8 @@ const roleConfig = {
 };
 
 export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
+  const membersList = Array.isArray(members) ? members : [];
+
   if (isLoading) {
     return (
       <div className="bg-white rounded-3xl shadow-air p-xxl flex flex-col items-center justify-center gap-md border border-slate-light/50">
@@ -36,7 +38,7 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
     );
   }
 
-  if (members.length === 0) {
+  if (membersList.length === 0) {
     return (
       <div className="bg-white rounded-3xl shadow-air p-xxl text-center border border-slate-light/50">
         <p className="text-slate-grey">Aucun membre trouvé pour cette tontine.</p>
@@ -58,7 +60,7 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-light/30">
-            {members.map((member) => (
+            {membersList.map((member) => (
               <tr key={member.id} className="hover:bg-slate-light/5 transition-colors group">
                 <td className="px-lg py-md">
                   <div className="flex items-center gap-md">
@@ -66,7 +68,7 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
                       "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0",
                       member.avatarColor || "bg-slate-100 text-slate-600"
                     )}>
-                      {member.name ? member.name.split(' ').map(n => n[0]).join('') : '?'}
+                      {member.name ? member.name.split(' ').map((n: any) => n[0]).join('') : '?'}
                     </div>
                     <div className="flex flex-col">
                       <span className="text-sm font-bold text-slate leading-tight">{member.name || 'Inconnu'}</span>
@@ -110,7 +112,7 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
       {/* Pagination (statique pour l'instant) */}
       <div className="px-lg py-md border-t border-slate-light/30 flex items-center justify-between">
         <p className="text-xs text-slate-grey">
-          Affichage de <span className="font-bold text-slate">1 à {members.length}</span> sur <span className="font-bold text-slate">{members.length}</span> membres
+          Affichage de <span className="font-bold text-slate">1 à {membersList.length}</span> sur <span className="font-bold text-slate">{membersList.length}</span> membres
         </p>
       </div>
     </div>
