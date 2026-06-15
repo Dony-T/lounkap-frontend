@@ -20,6 +20,7 @@ export default function TontineDetailPage() {
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('Aperçu');
 
   const fetchData = async () => {
     if (typeof id === 'string') {
@@ -35,7 +36,7 @@ export default function TontineDetailPage() {
     fetchData();
   }, [id]);
 
-  if (isLoading) {
+  if (isLoading && !tontine) {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center h-[60vh] gap-md">
@@ -68,25 +69,37 @@ export default function TontineDetailPage() {
           title={tontine.title || tontine.name || "Tontine sans nom"}
           code={tontine.code || tontine.inviteCode || "N/A"}
           onAddMember={() => setIsAddMemberOpen(true)}
+          selectedTab={activeTab}
+          onTabChange={setActiveTab}
         />
 
-        <div className="flex flex-col gap-xl">
-          <StatCards
-            amount={tontine.amount || tontine.contribution}
-            frequency={tontine.frequency}
-            maxMembers={tontine.maxMembers || (tontine as any).max_members || 10}
-            currentMembers={members.length || tontine.members?.current || 1}
-          />
+        {activeTab === 'Aperçu' ? (
+          <div className="flex flex-col gap-xl">
+            <StatCards
+              amount={tontine.amount || tontine.contribution}
+              frequency={tontine.frequency}
+              maxMembers={tontine.maxMembers || (tontine as any).max_members || 10}
+              currentMembers={members.length || tontine.members?.current || 1}
+            />
 
-          <div className="flex flex-col lg:flex-row gap-xl items-start">
-            <div className="flex-1 flex flex-col gap-xl w-full">
-              <CurrentCycle />
-              <InfoCards />
+            <div className="flex flex-col lg:flex-row gap-xl items-start">
+              <div className="flex-1 flex flex-col gap-xl w-full">
+                <CurrentCycle />
+                <InfoCards />
+              </div>
+
+              <TransactionList />
             </div>
-
-            <TransactionList />
           </div>
-        </div>
+        ) : activeTab === 'Membres' ? (
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <MemberTable members={members} isLoading={isLoading} />
+          </section>
+        ) : (
+          <div className="bg-white rounded-3xl shadow-air p-20 text-center border border-slate-light/50">
+            <p className="text-slate-grey font-medium italic">Cette section ({activeTab}) est en cours de développement.</p>
+          </div>
+        )}
       </div>
 
       <AddMemberDrawer

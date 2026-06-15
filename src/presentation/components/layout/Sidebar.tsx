@@ -14,7 +14,6 @@ import { cn } from '@/presentation/utils/cn';
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', id: 'dashboard', href: '/' },
-  { icon: Users, label: 'Membres', id: 'members', href: '/members' },
   { icon: Settings, label: 'Paramètres', id: 'settings', href: '/settings' },
 ];
 

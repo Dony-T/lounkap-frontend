@@ -9,11 +9,13 @@ interface DetailHeaderProps {
   title: string;
   code: string;
   onAddMember?: () => void;
+  selectedTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
 const tabs = ['Aperçu', 'Membres', 'Cycles', 'Paiements', 'Payouts'];
 
-export const DetailHeader = ({ title, code, onAddMember }: DetailHeaderProps) => {
+export const DetailHeader = ({ title, code, onAddMember, selectedTab = 'Aperçu', onTabChange }: DetailHeaderProps) => {
   return (
     <div className="flex flex-col gap-lg border-b border-slate-light bg-background sticky top-0 z-20 pt-xxl">
       <div className="flex justify-between items-center px-base">
@@ -42,12 +44,13 @@ export const DetailHeader = ({ title, code, onAddMember }: DetailHeaderProps) =>
       </div>
 
       <nav className="flex gap-xl px-base">
-        {tabs.map((tab, i) => (
+        {tabs.map((tab) => (
           <button
             key={tab}
+            onClick={() => onTabChange?.(tab)}
             className={cn(
               "pb-md text-sm font-semibold transition-all relative",
-              i === 0
+              selectedTab === tab
                 ? "text-primary after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-primary after:rounded-t-full"
                 : "text-slate-grey hover:text-slate"
             )}
