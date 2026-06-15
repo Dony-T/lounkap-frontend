@@ -31,7 +31,7 @@ export class TontineRepository implements ITontineRepository {
   }
 
   async join(code: string): Promise<Tontine> {
-    const response = await apiClient.post<any>('/tontines/join', { code });
+    const response = await apiClient.post<any>('/tontines/join', { inviteCode: code });
     return response.data.data;
   }
 
@@ -59,6 +59,8 @@ export class TontineRepository implements ITontineRepository {
   }
 
   async addMember(tontineId: string, data: { emailOrPhone: string; role: string }): Promise<void> {
-    await apiClient.post(`/tontines/${tontineId}/members`, data);
+    await apiClient.post(`/tontines/${tontineId}/add-member`, {
+      identifier: data.emailOrPhone
+    });
   }
 }
