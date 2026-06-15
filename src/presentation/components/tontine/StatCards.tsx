@@ -12,10 +12,26 @@ interface StatCardsProps {
 
 export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }: StatCardsProps) => {
   const stats = [
-    { label: 'Cotisation', value: `${typeof amount === 'number' ? amount.toLocaleString() : amount} FCFA`, icon: Banknote },
-    { label: 'Fréquence', value: frequency, icon: Calendar },
-    { label: 'Cagnotte Totale', value: `${(Number(amount) * maxMembers).toLocaleString()} FCFA`, icon: Wallet },
-    { label: 'Membres', value: `${currentMembers}/${maxMembers} actifs`, icon: Users },
+    {
+      label: 'Cotisation',
+      value: `${typeof amount === 'number' ? amount.toLocaleString() : (amount || 0)} FCFA`,
+      icon: Banknote
+    },
+    {
+      label: 'Fréquence',
+      value: frequency || 'N/A',
+      icon: Calendar
+    },
+    {
+      label: 'Cagnotte Totale',
+      value: `${(Number(amount || 0) * (maxMembers || 0)).toLocaleString()} FCFA`,
+      icon: Wallet
+    },
+    {
+      label: 'Membres',
+      value: `${currentMembers || 1}/${maxMembers || 1} actifs`,
+      icon: Users
+    },
   ];
 
   return (
@@ -30,7 +46,7 @@ export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }:
               <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">{stat.label}</span>
               <span className={cn(
                 "text-lg font-bold text-slate mt-1",
-                stat.value.includes('FCFA') && "mono"
+                stat.value?.toString().includes('FCFA') && "mono"
               )}>
                 {stat.value}
               </span>
