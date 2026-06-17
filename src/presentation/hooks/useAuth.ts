@@ -1,39 +1,37 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
 import { LoginUseCase } from '@/core/use-cases/LoginUseCase';
 import { RegisterUseCase } from '@/core/use-cases/RegisterUseCase';
-import { AuthResponse } from '@/core/domain/entities/User';
+import { GetProfileUseCase } from '@/core/use-cases/GetProfileUseCase';
+import { AuthResponse, User } from '@/core/domain/entities/User';
 
 const authRepository = new AuthRepository();
 const loginUseCase = new LoginUseCase(authRepository);
 const registerUseCase = new RegisterUseCase(authRepository);
+const getProfileUseCase = new GetProfileUseCase(authRepository);
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (credentials: any): Promise<AuthResponse | null> => {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("useAuth: Début de l'exécution du LoginUseCase...");
       const response = await loginUseCase.execute(credentials);
       
-      console.log("useAuth: Réponse reçue du UseCase:", response);
-
       if (!response.tokens || !response.tokens.accessToken) {
         throw new Error("Tokens manquants dans la réponse");
       }
 
-      // Persist tokens
       localStorage.setItem('accessToken', response.tokens.accessToken);
       localStorage.setItem('refreshToken', response.tokens.refreshToken || '');
       document.cookie = "auth_session=true; path=/";
       
-      console.log("useAuth: Connexion réussie et tokens stockés");
+      setUser(response.user);
       return response;
     } catch (err: any) {
-      console.error("useAuth: ERREUR CAPTURÉE ->", err);
       setError(err.response?.data?.message || err.message || 'Une erreur est survenue lors de la connexion');
       return null;
     } finally {
@@ -46,16 +44,36 @@ export const useAuth = () => {
     setError(null);
     try {
       const response = await registerUseCase.execute(data);
-      console.log("REPONSE REGISTER =", response);
+
+      if (response.tokens && response.tokens.accessToken) {
+        localStorage.setItem('accessToken', response.tokens.accessToken);
+        localStorage.setItem('refreshToken', response.tokens.refreshToken || '');
+        document.cookie = "auth_session=true; path=/";
+      }
+
+      setUser(response.user);
       return response;
     } catch (err: any) {
-      console.error("REGISTER ERROR", err);
       setError(err.response?.data?.message || "Une erreur est survenue lors de l'inscription");
       return null;
     } finally {
       setIsLoading(false);
     }
   };
+
+  const getProfile = useCallback(async (): Promise<User | null> => {
+    setIsLoading(true);
+    try {
+      const userData = await getProfileUseCase.execute();
+      setUser(userData);
+      return userData;
+    } catch (err: any) {
+      console.error("DEBUG - GetProfile Error:", err);
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const logout = () => {
     localStorage.removeItem('accessToken');
@@ -64,5 +82,5 @@ export const useAuth = () => {
     window.location.href = "/auth/login";
   };
 
-  return { login, register, logout, isLoading, error };
+  return { login, register, getProfile, logout, user, isLoading, error };
 };
