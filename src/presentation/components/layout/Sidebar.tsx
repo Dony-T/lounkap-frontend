@@ -2,23 +2,44 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useParams, useSearchParams } from 'next/navigation';
 import {
   LayoutDashboard,
   Users,
   Settings,
   LogOut,
-  Coins
+  Coins,
+  RefreshCw,
+  Wallet,
+  TrendingUp,
+  ArrowLeft
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 
-const navItems = [
+const defaultNavItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', id: 'dashboard', href: '/' },
   { icon: Settings, label: 'Paramètres', id: 'settings', href: '/settings' },
 ];
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const tontineId = params?.id as string;
+  const activeTab = searchParams.get('tab') || 'Aperçu';
+
+  // Determine if we are in a tontine detail view
+  const isTontineDetail = !!(tontineId && pathname.includes(`/tontines/${tontineId}`));
+
+  const tontineNavItems = [
+    { icon: LayoutDashboard, label: 'Aperçu', id: 'apercu', tab: 'Aperçu', href: `/tontines/${tontineId}` },
+    { icon: Users, label: 'Membres', id: 'membres', tab: 'Membres', href: `/tontines/${tontineId}?tab=Membres` },
+    { icon: RefreshCw, label: 'Cycles', id: 'cycles', tab: 'Cycles', href: `/tontines/${tontineId}?tab=Cycles` },
+    { icon: Wallet, label: 'Paiements', id: 'paiements', tab: 'Paiements', href: `/tontines/${tontineId}?tab=Paiements` },
+    { icon: TrendingUp, label: 'Payouts', id: 'payouts', tab: 'Payouts', href: `/tontines/${tontineId}?tab=Payouts` },
+  ];
+
+  const currentNavItems = isTontineDetail ? tontineNavItems : defaultNavItems;
 
   return (
     <aside className="w-64 h-screen bg-white border-r border-slate-light flex flex-col p-md fixed left-0 top-0 z-40">
@@ -33,8 +54,21 @@ export const Sidebar = () => {
       </div>
 
       <nav className="flex-1 flex flex-col gap-xs">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
+        {isTontineDetail && (
+          <Link
+            href="/"
+            className="flex items-center gap-md px-md py-sm rounded-2xl transition-all font-medium text-sm text-slate-grey hover:bg-slate-light/10 hover:text-slate mb-md"
+          >
+            <ArrowLeft size={20} />
+            Retour
+          </Link>
+        )}
+
+        {currentNavItems.map((item: any) => {
+          const isActive = isTontineDetail
+            ? activeTab === item.tab
+            : pathname === item.href;
+
           return (
             <Link
               key={item.id}
@@ -56,7 +90,6 @@ export const Sidebar = () => {
       <div className="mt-auto flex flex-col gap-md">
         <button
           onClick={() => {
-            // Simulate logout by removing the cookie
             document.cookie = "auth_session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
             window.location.href = "/auth/login";
           }}

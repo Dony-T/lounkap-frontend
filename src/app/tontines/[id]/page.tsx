@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { DetailHeader } from '@/presentation/components/tontine/DetailHeader';
 import { StatCards } from '@/presentation/components/tontine/StatCards';
@@ -9,6 +9,7 @@ import { CurrentCycle } from '@/presentation/components/tontine/CurrentCycle';
 import { TransactionList } from '@/presentation/components/tontine/TransactionList';
 import { InfoCards } from '@/presentation/components/tontine/InfoCards';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
+import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { Tontine } from '@/core/domain/entities/Tontine';
 import { Loader2 } from 'lucide-react';
@@ -16,11 +17,13 @@ import { Button } from '@/presentation/components/ui/Button';
 
 export default function TontineDetailPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'Aperçu';
+
   const { getTontineById, getMembers, isLoading, error } = useTontine();
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('Aperçu');
 
   const fetchData = async () => {
     if (typeof id === 'string') {
@@ -66,11 +69,9 @@ export default function TontineDetailPage() {
     <DashboardLayout>
       <div className="flex flex-col gap-xxl -mt-xxl">
         <DetailHeader
-          title={tontine.title || tontine.name || "Tontine sans nom"}
-          code={tontine.code || tontine.inviteCode || "N/A"}
+          title={tontine.title || (tontine as any).name || "Tontine sans nom"}
+          code={tontine.code || (tontine as any).inviteCode || "N/A"}
           onAddMember={() => setIsAddMemberOpen(true)}
-          selectedTab={activeTab}
-          onTabChange={setActiveTab}
         />
 
         {activeTab === 'Aperçu' ? (

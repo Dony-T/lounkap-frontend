@@ -15,9 +15,9 @@ interface DetailHeaderProps {
 
 const tabs = ['Aperçu', 'Membres', 'Cycles', 'Paiements', 'Payouts'];
 
-export const DetailHeader = ({ title, code, onAddMember, selectedTab = 'Aperçu', onTabChange }: DetailHeaderProps) => {
+export const DetailHeader = ({ title, code, onAddMember }: DetailHeaderProps) => {
   return (
-    <div className="flex flex-col gap-lg border-b border-slate-light bg-background sticky top-0 z-20 pt-xxl">
+    <div className="flex flex-col gap-lg border-b border-slate-light bg-background sticky top-0 z-20 pt-xxl pb-lg">
       <div className="flex justify-between items-center px-base">
         <div className="flex items-center gap-md">
           <Link href="/" className="w-10 h-10 rounded-xl bg-white border border-slate-light flex items-center justify-center text-slate hover:bg-slate-light/10 transition-colors">
@@ -42,23 +42,6 @@ export const DetailHeader = ({ title, code, onAddMember, selectedTab = 'Aperçu'
           </Button>
         </div>
       </div>
-
-      <nav className="flex gap-xl px-base">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => onTabChange?.(tab)}
-            className={cn(
-              "pb-md text-sm font-semibold transition-all relative",
-              selectedTab === tab
-                ? "text-primary after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-primary after:rounded-t-full"
-                : "text-slate-grey hover:text-slate"
-            )}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
     </div>
   );
 };
