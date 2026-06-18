@@ -71,16 +71,16 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
   }
 
   return (
-    <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       {/* Header section with Create Button */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center bg-white/50 backdrop-blur-md sticky top-0 z-30 py-md -mx-base px-base border-b border-slate-light/20 mb-md">
         <h2 className="text-xl font-bold text-slate tracking-tight">Gestion des Cycles</h2>
         <Button
           onClick={() => setIsCreateOpen(true)}
-          className="gap-sm bg-status-warning hover:bg-status-warning/90 border-none shadow-md shadow-status-warning/20"
+          className="gap-sm bg-status-warning hover:bg-status-warning/90 text-white border-none shadow-lg shadow-status-warning/30 px-lg h-11"
         >
-          <Plus size={18} />
-          Nouveau Cycle
+          <Plus size={20} />
+          <span className="font-bold">Nouveau Cycle</span>
         </Button>
       </div>
 
@@ -265,7 +265,7 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
 
       <CreateCycleDrawer
         isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(true)} // Note: In a real app, you'd want a separate state for onClose, but for simplicity:
+        onClose={() => setIsCreateOpen(false)}
         tontineId={tontineId}
         onSuccess={fetchCycles}
       />
