@@ -48,7 +48,7 @@ export const CreateCycleDrawer = ({ isOpen, onClose, tontineId, onSuccess }: Cre
       {/* Drawer Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 h-screen w-full max-w-md bg-white shadow-2xl z-50 transition-transform duration-300 ease-out p-xl flex flex-col gap-xl border-l border-slate-light",
+          "fixed right-0 top-0 h-screen w-full max-w-md bg-white shadow-2xl z-[100] transition-transform duration-300 ease-out p-xl flex flex-col gap-xl border-l border-slate-light",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
