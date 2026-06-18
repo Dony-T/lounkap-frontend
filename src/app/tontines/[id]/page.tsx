@@ -8,6 +8,7 @@ import { StatCards } from '@/presentation/components/tontine/StatCards';
 import { CurrentCycle } from '@/presentation/components/tontine/CurrentCycle';
 import { TransactionList } from '@/presentation/components/tontine/TransactionList';
 import { InfoCards } from '@/presentation/components/tontine/InfoCards';
+import { CycleManagement } from '@/presentation/components/tontine/CycleManagement';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
@@ -96,6 +97,8 @@ export default function TontineDetailPage() {
           <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <MemberTable members={members} isLoading={isLoading} />
           </section>
+        ) : activeTab === 'Cycles' ? (
+          <CycleManagement tontineId={tontine.id} />
         ) : (
           <div className="bg-white rounded-3xl shadow-air p-20 text-center border border-slate-light/50">
             <p className="text-slate-grey font-medium italic">Cette section ({activeTab}) est en cours de développement.</p>
