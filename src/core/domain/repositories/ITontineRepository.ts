@@ -9,5 +9,10 @@ export interface ITontineRepository {
   delete(id: string): Promise<void>;
   leave(id: string): Promise<void>;
   getMembers(tontineId: string): Promise<any[]>;
+  getMemberById(tontineId: string, userId: string): Promise<any>;
+  getMemberStats(tontineId: string, userId: string): Promise<any>;
   addMember(tontineId: string, data: { emailOrPhone: string; role: string }): Promise<void>;
+  updateMemberRole(tontineId: string, userId: string, role: string): Promise<void>;
+  updateMemberStatus(tontineId: string, userId: string, status: string): Promise<void>;
+  removeMember(tontineId: string, userId: string): Promise<void>;
 }

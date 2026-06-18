@@ -95,5 +95,73 @@ export const useTontine = () => {
     }
   };
 
-  return { createTontine, listTontines, joinTontine, getTontineById, getMembers, addMember, isLoading, error };
+  const updateMemberRole = async (tontineId: string, userId: string, role: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.updateMemberRole(tontineId, userId, role);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du changement de rôle");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateMemberStatus = async (tontineId: string, userId: string, status: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.updateMemberStatus(tontineId, userId, status);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du changement de statut");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const removeMember = async (tontineId: string, userId: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.removeMember(tontineId, userId);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de l'exclusion du membre");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getMemberStats = async (tontineId: string, userId: string): Promise<any | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getMemberStats(tontineId, userId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du chargement des statistiques du membre");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return {
+    createTontine,
+    listTontines,
+    joinTontine,
+    getTontineById,
+    getMembers,
+    addMember,
+    updateMemberRole,
+    updateMemberStatus,
+    removeMember,
+    getMemberStats,
+    isLoading,
+    error
+  };
 };

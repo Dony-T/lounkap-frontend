@@ -58,9 +58,31 @@ export class TontineRepository implements ITontineRepository {
     return response.data.data || [];
   }
 
+  async getMemberById(tontineId: string, userId: string): Promise<any> {
+    const response = await apiClient.get<any>(`/tontines/${tontineId}/members/${userId}`);
+    return response.data.data;
+  }
+
+  async getMemberStats(tontineId: string, userId: string): Promise<any> {
+    const response = await apiClient.get<any>(`/tontines/${tontineId}/members/${userId}/stats`);
+    return response.data.data;
+  }
+
   async addMember(tontineId: string, data: { emailOrPhone: string; role: string }): Promise<void> {
     await apiClient.post(`/tontines/${tontineId}/add-member`, {
       identifier: data.emailOrPhone
     });
+  }
+
+  async updateMemberRole(tontineId: string, userId: string, role: string): Promise<void> {
+    await apiClient.patch(`/tontines/${tontineId}/members/${userId}/role`, { role });
+  }
+
+  async updateMemberStatus(tontineId: string, userId: string, status: string): Promise<void> {
+    await apiClient.patch(`/tontines/${tontineId}/members/${userId}/status`, { status });
+  }
+
+  async removeMember(tontineId: string, userId: string): Promise<void> {
+    await apiClient.delete(`/tontines/${tontineId}/members/${userId}`);
   }
 }
