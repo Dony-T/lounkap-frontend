@@ -16,6 +16,7 @@ import {
 import { cn } from '@/presentation/utils/cn';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { CreateCycleDrawer } from './CreateCycleDrawer';
+import Link from 'next/link';
 
 interface CycleManagementProps {
   tontineId: string;
@@ -161,10 +162,13 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
                   Clôturer le cycle
                 </Button>
               </div>
-              <button className="flex items-center gap-sm text-sm font-bold text-slate-grey hover:text-slate transition-colors group">
+              <Link
+                href={`/tontines/${tontineId}/cycles/${activeCycle.id}`}
+                className="flex items-center gap-sm text-sm font-bold text-slate-grey hover:text-slate transition-colors group"
+              >
                 Détails du cycle
                 <ChevronRight size={18} className="transition-transform group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -231,9 +235,12 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
                   </td>
                   <td className="px-xl py-lg text-right">
                     <div className="flex items-center justify-end gap-md">
-                      <button className="p-sm text-slate-grey hover:text-primary transition-colors">
+                      <Link
+                        href={`/tontines/${tontineId}/cycles/${cycle.id}`}
+                        className="p-sm text-slate-grey hover:text-primary transition-colors"
+                      >
                         <EyeIcon size={18} />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleDelete(cycle.id)}
                         className="p-sm text-slate-grey hover:text-status-error transition-colors"
