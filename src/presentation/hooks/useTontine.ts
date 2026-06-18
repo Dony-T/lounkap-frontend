@@ -150,6 +150,76 @@ export const useTontine = () => {
     }
   };
 
+  // Cycles Hooks
+  const createCycle = async (tontineId: string, data: any): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.createCycle(tontineId, data);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la création du cycle");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const listCycles = async (tontineId: string): Promise<any[] | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.listCycles(tontineId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du chargement des cycles");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const advanceCycleTurn = async (tontineId: string, cycleId: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.advanceCycleTurn(tontineId, cycleId);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de l'avancement du tour");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const closeCycle = async (tontineId: string, cycleId: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.closeCycle(tontineId, cycleId);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la clôture du cycle");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteCycle = async (tontineId: string, cycleId: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await tontineRepository.deleteCycle(tontineId, cycleId);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la suppression du cycle");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     createTontine,
     listTontines,
@@ -161,6 +231,12 @@ export const useTontine = () => {
     updateMemberStatus,
     removeMember,
     getMemberStats,
+    // Cycles
+    createCycle,
+    listCycles,
+    advanceCycleTurn,
+    closeCycle,
+    deleteCycle,
     isLoading,
     error
   };

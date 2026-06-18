@@ -15,4 +15,13 @@ export interface ITontineRepository {
   updateMemberRole(tontineId: string, userId: string, role: string): Promise<void>;
   updateMemberStatus(tontineId: string, userId: string, status: string): Promise<void>;
   removeMember(tontineId: string, userId: string): Promise<void>;
+
+  // Cycles
+  createCycle(tontineId: string, data: any): Promise<any>;
+  listCycles(tontineId: string): Promise<any[]>;
+  getCycleById(tontineId: string, cycleId: string): Promise<any>;
+  advanceCycleTurn(tontineId: string, cycleId: string): Promise<void>;
+  closeCycle(tontineId: string, cycleId: string): Promise<void>;
+  getCycleStats(tontineId: string, cycleId: string): Promise<any>;
+  deleteCycle(tontineId: string, cycleId: string): Promise<void>;
 }

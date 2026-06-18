@@ -85,4 +85,37 @@ export class TontineRepository implements ITontineRepository {
   async removeMember(tontineId: string, userId: string): Promise<void> {
     await apiClient.delete(`/tontines/${tontineId}/members/${userId}`);
   }
+
+  // Cycles
+  async createCycle(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/cycles`, data);
+    return response.data.data;
+  }
+
+  async listCycles(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/cycles`);
+    return response.data.data || [];
+  }
+
+  async getCycleById(tontineId: string, cycleId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/cycles/${cycleId}`);
+    return response.data.data;
+  }
+
+  async advanceCycleTurn(tontineId: string, cycleId: string): Promise<void> {
+    await apiClient.post(`/tontines/${tontineId}/cycles/${cycleId}/next-turn`);
+  }
+
+  async closeCycle(tontineId: string, cycleId: string): Promise<void> {
+    await apiClient.post(`/tontines/${tontineId}/cycles/${cycleId}/close`);
+  }
+
+  async getCycleStats(tontineId: string, cycleId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/cycles/${cycleId}/stats`);
+    return response.data.data;
+  }
+
+  async deleteCycle(tontineId: string, cycleId: string): Promise<void> {
+    await apiClient.delete(`/tontines/${tontineId}/cycles/${cycleId}`);
+  }
 }
