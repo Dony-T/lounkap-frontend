@@ -14,29 +14,28 @@ import { PaymentManagement } from '@/presentation/components/tontine/PaymentMana
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
+import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
-import { Loader2 } from 'lucide-react';
-import { Button } from '@/presentation/components/ui/Button';
+import { Loader2, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function TontineDetailPage() {
   const { id } = useParams();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'Aperçu';
 
   const { getTontineById, getMembers, isLoading, error } = useTontine();
+  const { setCurrentTontine } = useTontineContext();
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
-  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
-
-  const handleTabChange = (tab: string) => {
-    router.push(`/tontines/${id}?tab=${tab}`);
-  };
 
   const fetchData = async () => {
     if (typeof id === 'string') {
       const tontineData = await getTontineById(id);
-      if (tontineData) setTontine(tontineData);
+      if (tontineData) {
+        setTontine(tontineData);
+        setCurrentTontine(tontineData);
+      }
 
       const memberList = await getMembers(id);
       if (memberList) setMembers(memberList);
@@ -45,6 +44,8 @@ export default function TontineDetailPage() {
 
   useEffect(() => {
     fetchData();
+    // Cleanup when leaving the page
+    return () => setCurrentTontine(null);
   }, [id]);
 
   if (isLoading && !tontine) {
@@ -75,17 +76,18 @@ export default function TontineDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col gap-xxl -mt-xxl">
-        <DetailHeader
-          title={tontine.title || (tontine as any).name || "Tontine sans nom"}
-          code={tontine.code || (tontine as any).inviteCode || "N/A"}
-          onAddMember={() => setIsAddMemberOpen(true)}
-          selectedTab={activeTab}
-          onTabChange={handleTabChange}
-        />
+      <div className="flex flex-col gap-xl">
+        {/* Breadcrumbs at the top of content */}
+        <div className="flex items-center gap-xs text-[10px] font-medium text-slate-grey mb-2">
+          <Link href="/" className="hover:text-primary transition-colors">Tontines</Link>
+          <ChevronRight size={10} />
+          <span>Détails de la Tontine</span>
+          <ChevronRight size={10} />
+          <span className="text-status-warning font-bold">{activeTab}</span>
+        </div>
 
         {activeTab === 'Aperçu' ? (
-          <div className="flex flex-col gap-xl">
+          <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
             <StatCards
               amount={tontine.amount || tontine.contribution}
               frequency={tontine.frequency}
@@ -118,13 +120,6 @@ export default function TontineDetailPage() {
           </div>
         )}
       </div>
-
-      <AddMemberDrawer
-        isOpen={isAddMemberOpen}
-        onClose={() => setIsAddMemberOpen(false)}
-        tontineId={tontine.id}
-        onSuccess={fetchData}
-      />
     </DashboardLayout>
   );
 }
