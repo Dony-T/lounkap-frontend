@@ -9,6 +9,7 @@ import { SummarySection } from '@/presentation/components/dashboard/SummarySecti
 import { CreateTontineDrawer } from '@/presentation/components/dashboard/CreateTontineDrawer';
 import { JoinTontineDrawer } from '@/presentation/components/dashboard/JoinTontineDrawer';
 import { useTontine } from '@/presentation/hooks/useTontine';
+import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
   const [isJoinOpen, setIsJoinOpen] = useState(false);
   const [tontines, setTontines] = useState<Tontine[]>([]);
   const { listTontines, isLoading, error } = useTontine();
+  const { setCurrentTontine } = useTontineContext();
 
   const fetchTontines = async () => {
     const data = await listTontines();
@@ -27,6 +29,8 @@ export default function Home() {
 
   useEffect(() => {
     fetchTontines();
+    // Clear context when on dashboard
+    setCurrentTontine(null);
   }, []);
 
   return (

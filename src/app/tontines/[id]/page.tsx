@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useRouter } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
-import { DetailHeader } from '@/presentation/components/tontine/DetailHeader';
 import { StatCards } from '@/presentation/components/tontine/StatCards';
 import { CurrentCycle } from '@/presentation/components/tontine/CurrentCycle';
 import { TransactionList } from '@/presentation/components/tontine/TransactionList';
@@ -11,12 +10,12 @@ import { InfoCards } from '@/presentation/components/tontine/InfoCards';
 import { CycleManagement } from '@/presentation/components/tontine/CycleManagement';
 import { PayoutManagement } from '@/presentation/components/tontine/PayoutManagement';
 import { PaymentManagement } from '@/presentation/components/tontine/PaymentManagement';
-import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
 import { Loader2, ChevronRight } from 'lucide-react';
+import { Button } from '@/presentation/components/ui/Button';
 import Link from 'next/link';
 
 export default function TontineDetailPage() {
