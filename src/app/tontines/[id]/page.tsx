@@ -10,6 +10,7 @@ import { TransactionList } from '@/presentation/components/tontine/TransactionLi
 import { InfoCards } from '@/presentation/components/tontine/InfoCards';
 import { CycleManagement } from '@/presentation/components/tontine/CycleManagement';
 import { PayoutManagement } from '@/presentation/components/tontine/PayoutManagement';
+import { PaymentManagement } from '@/presentation/components/tontine/PaymentManagement';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
@@ -107,6 +108,8 @@ export default function TontineDetailPage() {
           </section>
         ) : activeTab === 'Cycles' ? (
           <CycleManagement tontineId={tontine.id} />
+        ) : activeTab === 'Paiements' ? (
+          <PaymentManagement />
         ) : activeTab === 'Payouts' ? (
           <PayoutManagement />
         ) : (

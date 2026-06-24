@@ -26,49 +26,27 @@ import { useTontine } from '@/presentation/hooks/useTontine';
 export default function CycleDetailPage() {
   const { id, cycleId } = useParams();
   const router = useRouter();
-  const { getTontineById, listCycles, isLoading, error } = useTontine(); // Using listCycles to find current for now, or direct repo call
+  const { getTontineById, getCycleById, getCycleStats, isLoading, error } = useTontine();
   const [cycle, setCycle] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [tontine, setTontine] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (typeof id === 'string' && typeof cycleId === 'string') {
-        const tontineData = await getTontineById(id);
-        setTontine(tontineData);
+  const fetchData = async () => {
+    if (typeof id === 'string' && typeof cycleId === 'string') {
+      const tontineData = await getTontineById(id);
+      setTontine(tontineData);
 
-        // In a real app, we'd call getCycleById(id, cycleId)
-        // For now, let's simulate the data based on the screenshot
-        setCycle({
-          id: cycleId,
-          name: "Janvier - Juin 2024",
-          status: "ACTIVE",
-          targetAmount: 5000000,
-          collectedAmount: 2000000,
-          completedTurns: 4,
-          totalTurns: 10,
-          completionRate: 40,
-          currentBeneficiary: {
-            name: "Amina Kouamé",
-            turnNumber: 5,
-            status: "Collecte en cours",
-            turnCollected: 350000,
-            turnTarget: 500000,
-            avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amina"
-          },
-          stats: {
-            averageCollection: 480000,
-            nextCollectionDate: "12 Janvier 2024"
-          },
-          timeline: [
-            { name: "Jean-Paul N.", date: "01 Janv 2024", status: "PAYÉ" },
-            { name: "Sophie M.", date: "15 Janv 2024", status: "PAYÉ" },
-            { name: "Amina K.", date: "01 Févr 2024", status: "EN COURS" },
-            { name: "Boris K.", date: "15 Févr 2024", status: "EN ATTENTE" },
-            { name: "Cédric D.", date: "01 Mars 2024", status: "EN ATTENTE" },
-          ]
-        });
+      const cycleData = await getCycleById(id, cycleId);
+      if (cycleData) {
+        setCycle(cycleData);
       }
-    };
+
+      const statsData = await getCycleStats(id, cycleId);
+      if (statsData) setStats(statsData);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [id, cycleId]);
 
@@ -104,26 +82,26 @@ export default function CycleDetailPage() {
           <Card className="bg-white border-slate-light/50 shadow-air">
             <CardContent className="p-xl flex flex-col gap-sm">
               <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Cagnotte Globale</span>
-              <span className="text-lg font-bold text-slate">{cycle?.targetAmount?.toLocaleString()} FCFA</span>
+              <span className="text-lg font-bold text-slate">{(cycle?.targetAmount || cycle?.total_amount || 0).toLocaleString()} FCFA</span>
             </CardContent>
           </Card>
           <Card className="bg-white border-slate-light/50 shadow-air">
             <CardContent className="p-xl flex flex-col gap-sm">
               <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Fonds Collectés</span>
-              <span className="text-lg font-bold text-primary">{cycle?.collectedAmount?.toLocaleString()} FCFA</span>
+              <span className="text-lg font-bold text-primary">{(cycle?.collectedAmount || cycle?.collected_amount || 0).toLocaleString()} FCFA</span>
             </CardContent>
           </Card>
           <Card className="bg-white border-slate-light/50 shadow-air">
             <CardContent className="p-xl flex flex-col gap-sm">
               <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Tours Complétés</span>
-              <span className="text-lg font-bold text-slate">{cycle?.completedTurns} / {cycle?.totalTurns}</span>
+              <span className="text-lg font-bold text-slate">{cycle?.completedTurns || cycle?.completed_turns || 0} / {cycle?.totalTurns || cycle?.total_turns || 0}</span>
             </CardContent>
           </Card>
           <Card className="bg-white border-slate-light/50 shadow-air">
             <CardContent className="p-xl flex flex-col gap-sm">
-              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Taux de complétion <span className="text-slate font-bold">{cycle?.completionRate}%</span></span>
+              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Taux de complétion <span className="text-slate font-bold">{cycle?.completionRate || cycle?.completion_rate || 0}%</span></span>
               <div className="h-1.5 w-full bg-slate-light/50 rounded-full mt-2">
-                <div className="h-full bg-status-warning rounded-full" style={{ width: '40%' }} />
+                <div className="h-full bg-status-warning rounded-full" style={{ width: `${cycle?.completionRate || cycle?.completion_rate || 0}%` }} />
               </div>
             </CardContent>
           </Card>
