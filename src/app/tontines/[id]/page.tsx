@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { DetailHeader } from '@/presentation/components/tontine/DetailHeader';
 import { StatCards } from '@/presentation/components/tontine/StatCards';
@@ -9,6 +9,7 @@ import { CurrentCycle } from '@/presentation/components/tontine/CurrentCycle';
 import { TransactionList } from '@/presentation/components/tontine/TransactionList';
 import { InfoCards } from '@/presentation/components/tontine/InfoCards';
 import { CycleManagement } from '@/presentation/components/tontine/CycleManagement';
+import { PayoutManagement } from '@/presentation/components/tontine/PayoutManagement';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
@@ -18,6 +19,7 @@ import { Button } from '@/presentation/components/ui/Button';
 
 export default function TontineDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'Aperçu';
 
@@ -25,6 +27,10 @@ export default function TontineDetailPage() {
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
+  const handleTabChange = (tab: string) => {
+    router.push(`/tontines/${id}?tab=${tab}`);
+  };
 
   const fetchData = async () => {
     if (typeof id === 'string') {
@@ -73,6 +79,8 @@ export default function TontineDetailPage() {
           title={tontine.title || (tontine as any).name || "Tontine sans nom"}
           code={tontine.code || (tontine as any).inviteCode || "N/A"}
           onAddMember={() => setIsAddMemberOpen(true)}
+          selectedTab={activeTab}
+          onTabChange={handleTabChange}
         />
 
         {activeTab === 'Aperçu' ? (
@@ -99,6 +107,8 @@ export default function TontineDetailPage() {
           </section>
         ) : activeTab === 'Cycles' ? (
           <CycleManagement tontineId={tontine.id} />
+        ) : activeTab === 'Payouts' ? (
+          <PayoutManagement />
         ) : (
           <div className="bg-white rounded-3xl shadow-air p-20 text-center border border-slate-light/50">
             <p className="text-slate-grey font-medium italic">Cette section ({activeTab}) est en cours de développement.</p>
