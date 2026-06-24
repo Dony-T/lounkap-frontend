@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, Copy, UserPlus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Copy, UserPlus, Plus } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { cn } from '@/presentation/utils/cn';
 
