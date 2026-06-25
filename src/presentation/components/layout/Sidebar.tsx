@@ -12,7 +12,9 @@ import {
   RefreshCw,
   Wallet,
   TrendingUp,
-  ArrowLeft
+  ArrowLeft,
+  CreditCard,
+  HandCoins
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 
