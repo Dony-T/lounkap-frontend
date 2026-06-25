@@ -10,6 +10,8 @@ import { InfoCards } from '@/presentation/components/tontine/InfoCards';
 import { CycleManagement } from '@/presentation/components/tontine/CycleManagement';
 import { PayoutManagement } from '@/presentation/components/tontine/PayoutManagement';
 import { PaymentManagement } from '@/presentation/components/tontine/PaymentManagement';
+import { SavingsManagement } from '@/presentation/components/tontine/SavingsManagement';
+import { LoanManagement } from '@/presentation/components/tontine/LoanManagement';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
@@ -140,6 +142,10 @@ export default function TontineDetailPage() {
           <PaymentManagement />
         ) : activeTab === 'Payouts' ? (
           <PayoutManagement />
+        ) : activeTab === 'Epargne' ? (
+          <SavingsManagement tontineId={tontine.id} />
+        ) : activeTab === 'Prets' ? (
+          <LoanManagement tontineId={tontine.id} />
         ) : (
           <div className="bg-white rounded-3xl shadow-air p-20 text-center border border-slate-light/50">
             <p className="text-slate-grey font-medium italic">Cette section ({activeTab}) est en cours de développement.</p>

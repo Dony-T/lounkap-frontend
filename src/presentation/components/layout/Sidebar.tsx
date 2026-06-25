@@ -37,6 +37,8 @@ export const Sidebar = () => {
     { icon: RefreshCw, label: 'Cycles', id: 'cycles', tab: 'Cycles', href: `/tontines/${tontineId}?tab=Cycles` },
     { icon: Wallet, label: 'Paiements', id: 'paiements', tab: 'Paiements', href: `/tontines/${tontineId}?tab=Paiements` },
     { icon: TrendingUp, label: 'Payouts', id: 'payouts', tab: 'Payouts', href: `/tontines/${tontineId}?tab=Payouts` },
+    { icon: CreditCard, label: 'Épargne', id: 'epargne', tab: 'Epargne', href: `/tontines/${tontineId}?tab=Epargne` },
+    { icon: HandCoins, label: 'Prêts', id: 'prets', tab: 'Prets', href: `/tontines/${tontineId}?tab=Prets` },
   ];
 
   const currentNavItems = isTontineDetail ? tontineNavItems : defaultNavItems;
