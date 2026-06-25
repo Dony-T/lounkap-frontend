@@ -27,4 +27,33 @@ export interface ITontineRepository {
 
   // Transactions
   getTransactions(tontineId: string): Promise<any[]>;
+
+  // Payouts
+  createPayout(tontineId: string, data: any): Promise<any>;
+  listPayouts(tontineId: string): Promise<any[]>;
+  getPayoutStats(tontineId: string): Promise<any>;
+  getPayoutById(tontineId: string, payoutId: string): Promise<any>;
+  updatePayoutStatus(tontineId: string, payoutId: string, status: string): Promise<void>;
+  deletePayout(tontineId: string, payoutId: string): Promise<void>;
+
+  // Savings
+  depositSavings(tontineId: string, data: any): Promise<any>;
+  withdrawSavings(tontineId: string, data: any): Promise<any>;
+  getMySavingsOperations(tontineId: string): Promise<any[]>;
+  getMySavingsBalance(tontineId: string): Promise<any>;
+  listAllSavingsOperations(tontineId: string): Promise<any[]>;
+  getSavingsStats(tontineId: string): Promise<any>;
+  getMemberSavingsBalance(tontineId: string, userId: string): Promise<any>;
+  reviewSaving(tontineId: string, savingId: string, action: 'APPROVE' | 'REJECT'): Promise<void>;
+  createCollectiveSaving(tontineId: string, data: any): Promise<any>;
+  getCollectiveSavings(tontineId: string): Promise<any[]>;
+  deleteCollectiveSavingEntry(tontineId: string, entryId: string): Promise<void>;
+
+  // Loans
+  requestLoan(tontineId: string, data: any): Promise<any>;
+  listLoans(tontineId: string): Promise<any[]>;
+  getLoansStats(tontineId: string): Promise<any>;
+  getLoanById(tontineId: string, loanId: string): Promise<any>;
+  approveLoan(tontineId: string, loanId: string): Promise<void>;
+  rejectLoan(tontineId: string, loanId: string): Promise<void>;
 }

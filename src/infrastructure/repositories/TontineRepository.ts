@@ -123,4 +123,116 @@ export class TontineRepository implements ITontineRepository {
     const response = await apiClient.get(`/tontines/${tontineId}/transactions`);
     return response.data.data || [];
   }
+
+  // Payouts
+  async createPayout(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/payouts`, data);
+    return response.data.data;
+  }
+
+  async listPayouts(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/payouts`);
+    return response.data.data || [];
+  }
+
+  async getPayoutStats(tontineId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/payouts/stats`);
+    return response.data.data;
+  }
+
+  async getPayoutById(tontineId: string, payoutId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/payouts/${payoutId}`);
+    return response.data.data;
+  }
+
+  async updatePayoutStatus(tontineId: string, payoutId: string, status: string): Promise<void> {
+    await apiClient.patch(`/tontines/${tontineId}/payouts/${payoutId}/status`, { status });
+  }
+
+  async deletePayout(tontineId: string, payoutId: string): Promise<void> {
+    await apiClient.delete(`/tontines/${tontineId}/payouts/${payoutId}`);
+  }
+
+  // Savings
+  async depositSavings(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/savings/deposit`, data);
+    return response.data.data;
+  }
+
+  async withdrawSavings(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/savings/withdraw`, data);
+    return response.data.data;
+  }
+
+  async getMySavingsOperations(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings/me`);
+    return response.data.data || [];
+  }
+
+  async getMySavingsBalance(tontineId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings/me/balance`);
+    return response.data.data;
+  }
+
+  async listAllSavingsOperations(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings`);
+    return response.data.data || [];
+  }
+
+  async getSavingsStats(tontineId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings/stats`);
+    return response.data.data;
+  }
+
+  async getMemberSavingsBalance(tontineId: string, userId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings/members/${userId}/balance`);
+    return response.data.data;
+  }
+
+  async reviewSaving(tontineId: string, savingId: string, action: 'APPROVE' | 'REJECT'): Promise<void> {
+    await apiClient.patch(`/tontines/${tontineId}/savings/${savingId}/review`, { action });
+  }
+
+  async createCollectiveSaving(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/savings/collective`, data);
+    return response.data.data;
+  }
+
+  async getCollectiveSavings(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/savings/collective`);
+    return response.data.data || [];
+  }
+
+  async deleteCollectiveSavingEntry(tontineId: string, entryId: string): Promise<void> {
+    await apiClient.delete(`/tontines/${tontineId}/savings/collective/${entryId}`);
+  }
+
+  // Loans
+  async requestLoan(tontineId: string, data: any): Promise<any> {
+    const response = await apiClient.post(`/tontines/${tontineId}/loans`, data);
+    return response.data.data;
+  }
+
+  async listLoans(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/loans`);
+    return response.data.data || [];
+  }
+
+  async getLoansStats(tontineId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/loans/stats`);
+    return response.data.data;
+  }
+
+  async getLoanById(tontineId: string, loanId: string): Promise<any> {
+    const response = await apiClient.get(`/tontines/${tontineId}/loans/${loanId}`);
+    return response.data.data;
+  }
+
+  async approveLoan(tontineId: string, loanId: string): Promise<void> {
+    await apiClient.post(`/tontines/${tontineId}/loans/${loanId}/approve`);
+  }
+
+  async rejectLoan(tontineId: string, loanId: string): Promise<void> {
+    await apiClient.post(`/tontines/${tontineId}/loans/${loanId}/reject`);
+  }
 }
