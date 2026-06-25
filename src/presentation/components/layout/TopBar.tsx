@@ -20,20 +20,9 @@ export const TopBar = () => {
     <header className="flex flex-col border-b border-slate-light bg-white sticky top-0 z-30">
       <div className="flex justify-between items-center py-sm px-xxl gap-lg min-h-[72px]">
         <div className="flex-1 flex items-center gap-xl">
-          {/* Search Bar matching the screenshot */}
-          <div className="relative w-full max-w-md group">
-            <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey group-focus-within:text-primary transition-colors" size={18} />
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              className="w-full pl-xxl pr-md py-sm bg-slate-light/30 border border-transparent rounded-2xl text-sm focus:outline-none focus:bg-white focus:border-primary/30 transition-all h-11"
-            />
-          </div>
-
-          {/* Contextual Title/Actions when in a Tontine */}
+          {/* Tontine Identity on the LEFT */}
           {currentTontine && (
-            <div className="flex items-center gap-md ml-xl animate-in fade-in slide-in-from-left-4 duration-500">
-              <div className="h-10 w-px bg-slate-light/50" />
+            <div className="flex items-center gap-md animate-in fade-in slide-in-from-left-4 duration-500 min-w-max">
               <div className="flex flex-col">
                 <h2 className="text-lg font-bold text-slate leading-tight">{currentTontine.title || currentTontine.name}</h2>
                 <div className="flex items-center gap-sm mt-0.5">
@@ -43,18 +32,22 @@ export const TopBar = () => {
                   </span>
                 </div>
               </div>
+              <div className="h-10 w-px bg-slate-light/50 ml-md" />
             </div>
           )}
+
+          {/* Search Bar after the identity */}
+          <div className="relative w-full max-w-md group">
+            <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey group-focus-within:text-primary transition-colors" size={18} />
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              className="w-full pl-xxl pr-md py-sm bg-slate-light/30 border border-transparent rounded-2xl text-sm focus:outline-none focus:bg-white focus:border-primary/30 transition-all h-11"
+            />
+          </div>
         </div>
 
         <div className="flex items-center gap-lg">
-          <div className="flex items-center gap-md border-r border-slate-light pr-lg mr-sm">
-            <button className="text-sm font-bold text-slate-grey hover:text-primary transition-colors">Rejoindre</button>
-            <Button size="sm" className="bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold shadow-md shadow-status-warning/20 h-9 px-4">
-              Créer une tontine
-            </Button>
-          </div>
-
           <button className="relative p-sm text-slate-grey hover:text-slate hover:bg-slate-light/10 rounded-xl transition-all">
             <Bell size={20} strokeWidth={1.5} />
             <span className="absolute top-2 right-2 w-2 h-2 bg-status-error rounded-full border-2 border-white" />
