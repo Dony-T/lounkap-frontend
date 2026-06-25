@@ -1,15 +1,12 @@
 import React from 'react';
 import { Card, CardContent } from '@/presentation/components/ui/Card';
-import { MoreHorizontal, CheckCircle2 } from 'lucide-react';
+import { MoreHorizontal, CheckCircle2, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 
-const transactions = [
-  { name: 'Marc Lukman', date: "Aujourd'hui, 09:41", amount: '100,000', seed: 'Marc' },
-  { name: 'Sarah Kouam', date: 'Hier, 18:15', amount: '100,000', seed: 'Sarah' },
-  { name: 'David Olinga', date: '25 Mars, 10:02', amount: '100,000', seed: 'David' },
-  { name: 'Alice Mbia', date: '24 Mars, 14:30', amount: '100,000', seed: 'Alice' },
-];
+interface TransactionListProps {
+  transactions: any[];
+}
 
-export const TransactionList = () => {
+export const TransactionList = ({ transactions = [] }: TransactionListProps) => {
   return (
     <Card className="w-full lg:w-96 border border-slate-light/30">
       <CardContent className="flex flex-col gap-lg">
@@ -21,23 +18,38 @@ export const TransactionList = () => {
         </div>
 
         <div className="flex flex-col gap-md">
-          {transactions.map((tx, i) => (
-            <div key={i} className="flex justify-between items-center group">
+          {transactions.slice(0, 5).map((tx, i) => (
+            <div key={tx.id || i} className="flex justify-between items-center group">
               <div className="flex items-center gap-md">
-                <div className="w-10 h-10 rounded-full bg-slate-light overflow-hidden group-hover:scale-110 transition-transform">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${tx.seed}`} alt={tx.name} />
+                <div className="w-10 h-10 rounded-full bg-slate-light overflow-hidden group-hover:scale-110 transition-transform flex items-center justify-center">
+                  {tx.member?.avatarUrl ? (
+                    <img src={tx.member.avatarUrl} alt={tx.member.name} />
+                  ) : (
+                    <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                      {tx.type === 'DEBIT' ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate">{tx.name}</span>
-                  <span className="text-[10px] text-slate-grey font-medium">{tx.date}</span>
+                  <span className="text-sm font-bold text-slate">{tx.member?.name || tx.description || 'Transaction'}</span>
+                  <span className="text-[10px] text-slate-grey font-medium">
+                    {new Date(tx.createdAt || tx.date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}
+                  </span>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1">
-                <span className="text-sm font-bold mono text-slate">{tx.amount}</span>
-                <CheckCircle2 size={14} className="text-status-success" />
+                <span className="text-sm font-bold mono text-slate">
+                  {Number(tx.amount).toLocaleString()}
+                </span>
+                <CheckCircle2 size={14} className={tx.status === 'COMPLETED' ? "text-status-success" : "text-slate-grey"} />
               </div>
             </div>
           ))}
+          {transactions.length === 0 && (
+            <div className="py-xl text-center">
+              <p className="text-xs text-slate-grey italic">Aucune transaction récente</p>
+            </div>
+          )}
         </div>
 
         <button className="mt-md text-sm font-bold text-primary hover:text-primary-hover transition-colors py-sm border-t border-slate-light/50">

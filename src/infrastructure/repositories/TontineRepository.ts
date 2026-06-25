@@ -118,4 +118,9 @@ export class TontineRepository implements ITontineRepository {
   async deleteCycle(tontineId: string, cycleId: string): Promise<void> {
     await apiClient.delete(`/tontines/${tontineId}/cycles/${cycleId}`);
   }
+
+  async getTransactions(tontineId: string): Promise<any[]> {
+    const response = await apiClient.get(`/tontines/${tontineId}/transactions`);
+    return response.data.data || [];
+  }
 }

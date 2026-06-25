@@ -24,4 +24,7 @@ export interface ITontineRepository {
   closeCycle(tontineId: string, cycleId: string): Promise<void>;
   getCycleStats(tontineId: string, cycleId: string): Promise<any>;
   deleteCycle(tontineId: string, cycleId: string): Promise<void>;
+
+  // Transactions
+  getTransactions(tontineId: string): Promise<any[]>;
 }

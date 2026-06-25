@@ -220,6 +220,19 @@ export const useTontine = () => {
     }
   };
 
+  const getTransactions = async (tontineId: string): Promise<any[] | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getTransactions(tontineId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du chargement des transactions");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     createTontine,
     listTontines,
@@ -237,6 +250,8 @@ export const useTontine = () => {
     advanceCycleTurn,
     closeCycle,
     deleteCycle,
+    // Transactions
+    getTransactions,
     isLoading,
     error
   };

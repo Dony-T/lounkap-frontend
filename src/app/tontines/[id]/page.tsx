@@ -24,10 +24,11 @@ export default function TontineDetailPage() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'Aperçu';
 
-  const { getTontineById, getMembers, isLoading, error } = useTontine();
+  const { getTontineById, getMembers, getTransactions, isLoading, error } = useTontine();
   const { setCurrentTontine } = useTontineContext();
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
   const fetchData = async () => {
@@ -38,8 +39,13 @@ export default function TontineDetailPage() {
         setCurrentTontine(tontineData);
       }
 
-      const memberList = await getMembers(id);
+      const [memberList, txList] = await Promise.all([
+        getMembers(id),
+        getTransactions(id)
+      ]);
+
       if (memberList) setMembers(memberList);
+      if (txList) setTransactions(txList);
     }
   };
 
@@ -121,7 +127,7 @@ export default function TontineDetailPage() {
                 <InfoCards />
               </div>
 
-              <TransactionList />
+              <TransactionList transactions={transactions} />
             </div>
           </div>
         ) : activeTab === 'Membres' ? (
