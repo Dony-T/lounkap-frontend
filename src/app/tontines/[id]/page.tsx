@@ -14,8 +14,9 @@ import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
-import { Loader2, ChevronRight } from 'lucide-react';
+import { Loader2, ChevronRight, UserPlus, Plus } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
+import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import Link from 'next/link';
 
 export default function TontineDetailPage() {
@@ -27,6 +28,7 @@ export default function TontineDetailPage() {
   const { setCurrentTontine } = useTontineContext();
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
   const fetchData = async () => {
     if (typeof id === 'string') {
@@ -76,13 +78,32 @@ export default function TontineDetailPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-xl">
-        {/* Breadcrumbs at the top of content */}
-        <div className="flex items-center gap-xs text-[10px] font-medium text-slate-grey mb-2">
-          <Link href="/" className="hover:text-primary transition-colors">Tontines</Link>
-          <ChevronRight size={10} />
-          <span>Détails de la Tontine</span>
-          <ChevronRight size={10} />
-          <span className="text-status-warning font-bold">{activeTab}</span>
+        {/* Header with Path on Left and Actions on Right */}
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex items-center gap-xs text-[10px] font-medium text-slate-grey">
+            <Link href="/" className="hover:text-primary transition-colors">Tontines</Link>
+            <ChevronRight size={10} />
+            <span>Détails de la Tontine</span>
+            <ChevronRight size={10} />
+            <span className="text-status-warning font-bold">{activeTab}</span>
+          </div>
+
+          <div className="flex items-center gap-md">
+            <Button
+              variant="secondary"
+              className="gap-sm h-10 px-md rounded-xl border-slate-light text-slate font-bold text-xs"
+              onClick={() => setIsAddMemberOpen(true)}
+            >
+              <UserPlus size={16} />
+              Ajouter un membre
+            </Button>
+            <Button
+              className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+            >
+              <Plus size={16} />
+              Action
+            </Button>
+          </div>
         </div>
 
         {activeTab === 'Aperçu' ? (
@@ -119,6 +140,13 @@ export default function TontineDetailPage() {
           </div>
         )}
       </div>
+
+      <AddMemberDrawer
+        isOpen={isAddMemberOpen}
+        onClose={() => setIsAddMemberOpen(false)}
+        tontineId={tontine.id}
+        onSuccess={fetchData}
+      />
     </DashboardLayout>
   );
 }

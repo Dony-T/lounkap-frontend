@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, UserPlus, Loader2 } from 'lucide-react';
+import { Plus, UserPlus, Loader2, ChevronRight } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { TontineCard } from '@/presentation/components/dashboard/TontineCard';
@@ -36,22 +36,27 @@ export default function Home() {
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-xxl">
-        <header className="flex justify-between items-end">
+        <header className="flex justify-between items-start">
           <div className="flex flex-col gap-sm">
+            <div className="flex items-center gap-xs text-[10px] font-medium text-slate-grey mb-1">
+              <span>LounKap</span>
+              <ChevronRight size={10} />
+              <span className="text-primary font-bold">Tableau de bord</span>
+            </div>
             <h1 className="text-4xl font-bold text-slate tracking-tight">Mes Tontines</h1>
             <p className="text-body-md text-slate-grey">Gérez vos cercles d'épargne et suivez vos cotisations.</p>
           </div>
-          <div className="flex gap-md">
+          <div className="flex gap-md mt-6">
             <Button
               variant="secondary"
-              className="gap-sm"
+              className="gap-sm h-11 px-lg rounded-2xl border-slate-light text-slate font-bold"
               onClick={() => setIsJoinOpen(true)}
             >
               <UserPlus size={18} />
               Rejoindre
             </Button>
             <Button
-              className="gap-sm"
+              className="gap-sm h-11 px-lg rounded-2xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold shadow-md shadow-status-warning/20"
               onClick={() => setIsCreateOpen(true)}
             >
               <Plus size={18} />
