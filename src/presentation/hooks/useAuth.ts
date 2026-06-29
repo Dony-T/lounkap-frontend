@@ -68,7 +68,11 @@ export const useAuth = () => {
       setUser(userData);
       return userData;
     } catch (err: any) {
-      console.error("DEBUG - GetProfile Error:", err);
+      if (err.response?.status === 401) {
+        console.log("useAuth: Session expirée (401)");
+      } else {
+        console.error("useAuth: Erreur lors de la récupération du profil", err);
+      }
       return null;
     } finally {
       setIsLoading(false);
