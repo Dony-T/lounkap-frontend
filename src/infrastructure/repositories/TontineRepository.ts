@@ -36,8 +36,16 @@ export class TontineRepository implements ITontineRepository {
   }
 
   async getById(id: string): Promise<Tontine> {
+    console.log(`TontineRepository: Fetching tontine by ID: ${id}`);
     const response = await apiClient.get<any>(`/tontines/${id}`);
-    return response.data.data;
+    console.log("TontineRepository: getById Raw Response.data:", response.data);
+
+    // Backend confirms: data is in response.data.data.tontine
+    // We handle variations to be safe
+    const data = response.data?.data?.tontine || response.data?.tontine || response.data?.data || response.data;
+    console.log("TontineRepository: Unboxed tontine object:", data);
+
+    return data;
   }
 
   async update(id: string, data: UpdateTontineDTO): Promise<Tontine> {

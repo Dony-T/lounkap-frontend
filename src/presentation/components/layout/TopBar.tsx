@@ -24,11 +24,11 @@ export const TopBar = () => {
           {currentTontine && (
             <div className="flex items-center gap-md animate-in fade-in slide-in-from-left-4 duration-500 min-w-max">
               <div className="flex flex-col">
-                <h2 className="text-lg font-bold text-slate leading-tight">{currentTontine.title || currentTontine.name}</h2>
+                <h2 className="text-lg font-bold text-slate leading-tight">{currentTontine.name || (currentTontine as any).title}</h2>
                 <div className="flex items-center gap-sm mt-0.5">
-                  <span className="badge-success h-4 px-1.5 text-[9px]">Active</span>
+                  <span className="badge-success h-4 px-1.5 text-[9px]">{currentTontine.status || 'Active'}</span>
                   <span className="text-[9px] font-bold text-slate-grey mono uppercase tracking-tighter">
-                    CODE: {currentTontine.code || currentTontine.inviteCode}
+                    CODE: {currentTontine.inviteCode || (currentTontine as any).code}
                   </span>
                 </div>
               </div>

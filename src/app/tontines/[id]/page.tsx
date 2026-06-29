@@ -34,17 +34,25 @@ export default function TontineDetailPage() {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
 
   const fetchData = async () => {
+    console.log("TontineDetailPage: Starting fetchData for ID:", id);
     if (typeof id === 'string') {
       const tontineData = await getTontineById(id);
+      console.log("TontineDetailPage: Received tontineData:", tontineData);
+
       if (tontineData) {
         setTontine(tontineData);
         setCurrentTontine(tontineData);
+      } else {
+        console.warn("TontineDetailPage: tontineData is null or undefined");
       }
 
       const [memberList, txList] = await Promise.all([
         getMembers(id),
         getTransactions(id)
       ]);
+
+      console.log("TontineDetailPage: memberList:", memberList);
+      console.log("TontineDetailPage: txList:", txList);
 
       if (memberList) setMembers(memberList);
       if (txList) setTransactions(txList);
@@ -68,10 +76,11 @@ export default function TontineDetailPage() {
     );
   }
 
-  if (error || !tontine) {
+  if (error && !tontine) {
+    console.log("TontineDetailPage: Rendering Error State. Error:", error);
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center min-h-[60vh] px-base py-xxl">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] w-full px-base py-xxl">
           <div className="bg-white border border-slate-light/50 rounded-[32px] p-xxl text-center max-w-md w-full shadow-air animate-in fade-in zoom-in duration-300">
             <div className="w-16 h-16 rounded-2xl bg-status-error/10 flex items-center justify-center text-status-error mx-auto mb-lg">
               <AlertCircle size={32} />
@@ -100,9 +109,20 @@ export default function TontineDetailPage() {
     );
   }
 
+  if (!tontine) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col items-center justify-center h-[60vh] w-full gap-md">
+          <Loader2 className="animate-spin text-primary" size={48} />
+          <p className="text-slate-grey font-medium">Récupération des informations...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
-      <div className="flex flex-col gap-xl">
+      <div className="flex flex-col gap-xl w-full">
         {/* Header with Path on Left and Actions on Right */}
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-xs text-[10px] font-medium text-slate-grey">
@@ -114,14 +134,16 @@ export default function TontineDetailPage() {
           </div>
 
           <div className="flex items-center gap-md">
-            <Button
-              variant="secondary"
-              className="gap-sm h-10 px-md rounded-xl border-slate-light text-slate font-bold text-xs"
-              onClick={() => setIsAddMemberOpen(true)}
-            >
-              <UserPlus size={16} />
-              Ajouter un membre
-            </Button>
+            {(tontine as any).myRole === 'PRESIDENT' && (
+              <Button
+                variant="secondary"
+                className="gap-sm h-10 px-md rounded-xl border-slate-light text-slate font-bold text-xs"
+                onClick={() => setIsAddMemberOpen(true)}
+              >
+                <UserPlus size={16} />
+                Ajouter un membre
+              </Button>
+            )}
             <Button
               className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
             >
