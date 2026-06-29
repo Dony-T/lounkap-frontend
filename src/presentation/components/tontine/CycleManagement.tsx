@@ -36,8 +36,9 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
     fetchCycles();
   }, [tontineId]);
 
-  const activeCycle = cycles.find(c => c.status === 'ACTIVE' || c.status === 'IN_PROGRESS');
-  const pastCycles = cycles.filter(c => c.status !== 'ACTIVE' && c.status !== 'IN_PROGRESS');
+  const cyclesList = Array.isArray(cycles) ? cycles : [];
+  const activeCycle = cyclesList.find(c => c.status === 'ACTIVE' || c.status === 'IN_PROGRESS');
+  const pastCycles = cyclesList.filter(c => c.status !== 'ACTIVE' && c.status !== 'IN_PROGRESS');
 
   const handleNextTurn = async (cycleId: string) => {
     if (await advanceCycleTurn(tontineId, cycleId)) {
