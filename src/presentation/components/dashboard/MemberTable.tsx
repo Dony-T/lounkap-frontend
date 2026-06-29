@@ -60,43 +60,45 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-light/30">
-            {membersList.map((member) => (
-              <tr key={member.id} className="hover:bg-slate-light/5 transition-colors group">
+            {membersList.map((membership: any) => (
+              <tr key={membership.id} className="hover:bg-slate-light/5 transition-colors group">
                 <td className="px-lg py-md">
                   <div className="flex items-center gap-md">
                     <div className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0",
-                      member.avatarColor || "bg-slate-100 text-slate-600"
+                      membership.avatarColor || "bg-slate-100 text-slate-600"
                     )}>
-                      {member.name ? member.name.split(' ').map((n: any) => n[0]).join('') : '?'}
+                      {membership.user?.name ? membership.user.name.split(' ').map((n: any) => n[0]).join('') : '?'}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-slate leading-tight">{member.name || 'Inconnu'}</span>
-                      <span className="text-xs text-slate-grey">{member.email || 'Pas d\'email'}</span>
+                      <span className="text-sm font-bold text-slate leading-tight">{membership.user?.name || 'Inconnu'}</span>
+                      <span className="text-xs text-slate-grey">{membership.user?.email || membership.user?.phone || 'Pas d\'identifiant'}</span>
                     </div>
                   </div>
                 </td>
                 <td className="px-lg py-md text-center">
-                  <Badge variant={(roleConfig[member.role as keyof typeof roleConfig] || roleConfig.MEMBER).variant}>
-                    {(roleConfig[member.role as keyof typeof roleConfig] || roleConfig.MEMBER).label}
+                  <Badge variant={(roleConfig[membership.role as keyof typeof roleConfig] || roleConfig.MEMBER).variant}>
+                    {(roleConfig[membership.role as keyof typeof roleConfig] || roleConfig.MEMBER).label}
                   </Badge>
                 </td>
                 <td className="px-lg py-md text-center">
                   <div className="flex items-center justify-center gap-2">
                     <div className={cn(
                       "w-1.5 h-1.5 rounded-full",
-                      member.status === 'ACTIVE' ? "bg-status-success" : "bg-slate-grey"
+                      membership.status === 'ACTIVE' ? "bg-status-success" : "bg-slate-grey"
                     )} />
                     <span className={cn(
                       "text-[10px] font-bold uppercase tracking-widest",
-                      member.status === 'ACTIVE' ? "text-status-success" : "text-slate-grey"
+                      membership.status === 'ACTIVE' ? "text-status-success" : "text-slate-grey"
                     )}>
-                      {member.status || 'INCONNU'}
+                      {membership.status || 'INCONNU'}
                     </span>
                   </div>
                 </td>
                 <td className="px-lg py-md">
-                  <span className="text-sm font-medium text-slate-grey">{member.joinDate || 'N/A'}</span>
+                  <span className="text-sm font-medium text-slate-grey">
+                    {membership.joinedAt ? new Date(membership.joinedAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                  </span>
                 </td>
                 <td className="px-lg py-md text-right">
                   <button className="p-sm text-slate-grey hover:text-slate transition-colors">
