@@ -16,7 +16,7 @@ import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
-import { Loader2, ChevronRight, UserPlus, Plus } from 'lucide-react';
+import { Loader2, ChevronRight, UserPlus, Plus, AlertCircle } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import Link from 'next/link';
@@ -71,12 +71,29 @@ export default function TontineDetailPage() {
   if (error || !tontine) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[60vh] gap-lg">
-          <div className="bg-status-error/10 border border-status-error/20 rounded-2xl p-xl text-center max-w-md">
-            <p className="text-status-error font-bold">{error || "Tontine non trouvée"}</p>
-            <Button variant="secondary" className="mt-md" onClick={fetchData}>
-              Réessayer
-            </Button>
+        <div className="flex flex-col items-center justify-center h-[60vh] px-base">
+          <div className="bg-status-error/5 border border-status-error/10 rounded-[32px] p-xxl text-center max-w-md w-full shadow-air animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 rounded-2xl bg-status-error/10 flex items-center justify-center text-status-error mx-auto mb-lg">
+              <AlertCircle size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-slate mb-sm">Oups ! Une erreur est survenue</h3>
+            <p className="text-slate-grey font-medium leading-relaxed mb-xl">
+              {error === "Route not found."
+                ? `La tontine avec l'ID "${id}" n'a pas été trouvée sur le serveur.`
+                : error || "Impossible de charger les détails de la tontine."}
+            </p>
+            <div className="flex flex-col gap-sm">
+              <Button
+                variant="primary"
+                className="w-full h-12 rounded-2xl shadow-lg shadow-primary/20 font-bold"
+                onClick={fetchData}
+              >
+                Réessayer le chargement
+              </Button>
+              <Link href="/" className="text-sm font-bold text-slate-grey hover:text-primary transition-colors py-2">
+                Retour au tableau de bord
+              </Link>
+            </div>
           </div>
         </div>
       </DashboardLayout>
