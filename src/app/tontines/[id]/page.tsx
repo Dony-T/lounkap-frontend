@@ -71,13 +71,13 @@ export default function TontineDetailPage() {
   if (error || !tontine) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[60vh] px-base">
-          <div className="bg-status-error/5 border border-status-error/10 rounded-[32px] p-xxl text-center max-w-md w-full shadow-air animate-in fade-in zoom-in duration-300">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] px-base py-xxl">
+          <div className="bg-white border border-slate-light/50 rounded-[32px] p-xxl text-center max-w-md w-full shadow-air animate-in fade-in zoom-in duration-300">
             <div className="w-16 h-16 rounded-2xl bg-status-error/10 flex items-center justify-center text-status-error mx-auto mb-lg">
               <AlertCircle size={32} />
             </div>
             <h3 className="text-xl font-bold text-slate mb-sm">Oups ! Une erreur est survenue</h3>
-            <p className="text-slate-grey font-medium leading-relaxed mb-xl">
+            <p className="text-sm text-slate-grey font-medium leading-relaxed mb-xl">
               {error === "Route not found."
                 ? `La tontine avec l'ID "${id}" n'a pas été trouvée sur le serveur.`
                 : error || "Impossible de charger les détails de la tontine."}
