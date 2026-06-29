@@ -28,6 +28,12 @@ export const TopBar = () => {
                 <h2 className="text-2xl font-bold text-slate leading-tight tracking-tight">{currentTontine.name || (currentTontine as any).title}</h2>
                 <div className="flex items-center gap-sm mt-0.5">
                   <span className="badge-success h-4 px-1.5 text-[9px] font-bold">{currentTontine.status || 'Active'}</span>
+                  <div className="flex items-center gap-1 text-[9px] font-bold text-slate-grey mono">
+                    <span className="uppercase tracking-wider">CODE: {currentTontine.inviteCode || (currentTontine as any).code}</span>
+                    <button className="hover:text-primary transition-colors">
+                      <Copy size={10} />
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="h-10 w-px bg-slate-light/50 ml-md" />

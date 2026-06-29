@@ -16,7 +16,7 @@ import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Tontine } from '@/core/domain/entities/Tontine';
-import { Loader2, ChevronRight, UserPlus, Plus, AlertCircle } from 'lucide-react';
+import { Loader2, ChevronRight, UserPlus, Plus, AlertCircle, Copy } from 'lucide-react';
 import { Button } from '@/presentation/components/ui/Button';
 import { AddMemberDrawer } from '@/presentation/components/dashboard/AddMemberDrawer';
 import Link from 'next/link';
@@ -134,22 +134,31 @@ export default function TontineDetailPage() {
           </div>
 
           <div className="flex items-center gap-md">
-            {(tontine as any).myRole === 'PRESIDENT' && (
-              <Button
-                variant="secondary"
-                className="gap-sm h-10 px-md rounded-xl border-slate-light text-slate font-bold text-xs"
-                onClick={() => setIsAddMemberOpen(true)}
-              >
-                <UserPlus size={16} />
-                Ajouter un membre
-              </Button>
+            {(activeTab === 'Aperçu' || activeTab === 'Membres') && (
+              <>
+                {(tontine as any).myRole === 'PRESIDENT' && (
+                  <Button
+                    variant="secondary"
+                    className="gap-sm h-10 px-md rounded-xl border-slate-light text-slate font-bold text-xs"
+                    onClick={() => setIsAddMemberOpen(true)}
+                  >
+                    <UserPlus size={16} />
+                    Ajouter un membre
+                  </Button>
+                )}
+                <Button
+                  className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+                  onClick={() => {
+                    const code = tontine.inviteCode || (tontine as any).code;
+                    navigator.clipboard.writeText(code);
+                    alert(`Code d'invitation copié : ${code}`);
+                  }}
+                >
+                  <Copy size={16} />
+                  Inviter par code
+                </Button>
+              </>
             )}
-            <Button
-              className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
-            >
-              <Plus size={16} />
-              Action
-            </Button>
           </div>
         </div>
 
