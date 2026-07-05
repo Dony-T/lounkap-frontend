@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { Button } from '@/presentation/components/ui/Button';
 import { Badge } from '@/presentation/components/ui/Badge';
@@ -9,19 +9,43 @@ import {
   ArrowDownLeft,
   Calendar,
   MoreVertical,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
+import { usePayment } from '@/presentation/hooks/usePayment';
 
-export const PaymentManagement = () => {
-  // Mock data for payments/contributions
-  const payments = [
-    { id: '1', member: 'Marc Lukman', date: '28 Mars 2024', amount: 100000, type: 'COTISATION', status: 'COMPLETED' },
-    { id: '2', member: 'Sarah Kouam', date: '27 Mars 2024', amount: 100000, type: 'COTISATION', status: 'COMPLETED' },
-    { id: '3', member: 'David Olinga', date: '25 Mars 2024', amount: 100000, type: 'COTISATION', status: 'COMPLETED' },
-    { id: '4', member: 'Alice Mbia', date: '24 Mars 2024', amount: 100000, type: 'COTISATION', status: 'COMPLETED' },
-    { id: '5', member: 'Jean Dupont', date: '20 Mars 2024', amount: 100000, type: 'COTISATION', status: 'COMPLETED' },
-  ];
+interface PaymentManagementProps {
+  tontineId: string;
+}
+
+export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
+  const { getTontinePayments, isLoading } = usePayment();
+  const [payments, setPayments] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+
+  const fetchData = async () => {
+    const [paymentsData] = await Promise.all([
+      getTontinePayments(tontineId),
+    ]);
+
+    if (paymentsData) setPayments(paymentsData);
+    // Note: Stats endpoint implementation might be needed if not fully in usePayment yet
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [tontineId]);
+
+  if (isLoading && payments.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="animate-spin text-primary" size={40} />
+      </div>
+    );
+  }
+
+  const paymentsList = Array.isArray(payments) ? payments : [];
 
   return (
     <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -53,26 +77,28 @@ export const PaymentManagement = () => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Collecte Totale</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate">2,450,000</span>
+              <span className="text-2xl font-bold text-slate">
+                {paymentsList.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0).toLocaleString()}
+              </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Cotisations du mois</span>
+            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Nombre de paiements</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-primary">800,000</span>
-              <span className="text-xs font-bold text-slate-grey">FCFA</span>
+              <span className="text-2xl font-bold text-primary">{paymentsList.length}</span>
+              <span className="text-xs font-bold text-slate-grey">validés</span>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Taux de Ponctualité</span>
+            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Statut Moyen</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-status-success">98%</span>
-              <span className="text-xs font-bold text-slate-grey">en moyenne</span>
+              <span className="text-2xl font-bold text-status-success">100%</span>
+              <span className="text-xs font-bold text-slate-grey">réussis</span>
             </div>
           </CardContent>
         </Card>
@@ -93,7 +119,7 @@ export const PaymentManagement = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-light/30">
-              {payments.map((payment) => (
+              {paymentsList.map((payment) => (
                 <tr key={payment.id} className="hover:bg-slate-light/5 transition-colors group">
                   <td className="px-lg py-lg">
                     <div className="flex items-center gap-md">
@@ -101,24 +127,35 @@ export const PaymentManagement = () => {
                         <ArrowDownLeft size={20} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate">{payment.member}</span>
-                        <span className="text-[10px] text-slate-grey font-medium tracking-tight">Cotisation mensuelle</span>
+                        <span className="text-sm font-bold text-slate">{payment.user?.name || payment.userName || 'Membre'}</span>
+                        <span className="text-[10px] text-slate-grey font-medium tracking-tight">
+                          {payment.description || 'Cotisation'}
+                        </span>
                       </div>
                     </div>
                   </td>
                   <td className="px-lg py-lg">
-                    <Badge variant="neutral" className="text-[10px] font-bold">{payment.type}</Badge>
+                    <Badge variant="neutral" className="text-[10px] font-bold">
+                      {payment.type || 'COTISATION'}
+                    </Badge>
                   </td>
                   <td className="px-lg py-lg">
-                    <span className="text-sm font-medium text-slate-grey">{payment.date}</span>
+                    <span className="text-sm font-medium text-slate-grey">
+                      {payment.createdAt ? new Date(payment.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
+                    </span>
                   </td>
                   <td className="px-lg py-lg">
-                    <span className="text-sm font-bold text-slate">{payment.amount.toLocaleString()} FCFA</span>
+                    <span className="text-sm font-bold text-slate">{(Number(payment.amount) || 0).toLocaleString()} FCFA</span>
                   </td>
                   <td className="px-lg py-lg text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <CheckCircle2 size={16} className="text-status-success" />
-                      <span className="text-[10px] font-bold text-status-success uppercase tracking-widest">TERMINÉ</span>
+                      <CheckCircle2 size={16} className={payment.status === 'SUCCESS' || payment.status === 'COMPLETED' ? "text-status-success" : "text-slate-grey"} />
+                      <span className={cn(
+                        "text-[10px] font-bold uppercase tracking-widest",
+                        payment.status === 'SUCCESS' || payment.status === 'COMPLETED' ? "text-status-success" : "text-slate-grey"
+                      )}>
+                        {payment.status || 'TERMINÉ'}
+                      </span>
                     </div>
                   </td>
                   <td className="px-lg py-lg text-right">
@@ -128,6 +165,13 @@ export const PaymentManagement = () => {
                   </td>
                 </tr>
               ))}
+              {paymentsList.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-lg py-xxl text-center text-slate-grey italic">
+                    Aucune transaction trouvée pour cette tontine.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

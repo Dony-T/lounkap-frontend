@@ -187,7 +187,7 @@ export default function TontineDetailPage() {
         ) : activeTab === 'Cycles' ? (
           <CycleManagement tontineId={tontine.id} />
         ) : activeTab === 'Paiements' ? (
-          <PaymentManagement />
+          <PaymentManagement tontineId={tontine.id} />
         ) : activeTab === 'Payouts' ? (
           <PayoutManagement />
         ) : activeTab === 'Epargne' ? (
