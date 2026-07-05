@@ -135,6 +135,19 @@ export const useFinancials = () => {
     }
   };
 
+  const createPayout = async (tontineId: string, data: { cycleId?: string, recipientId: string, amount: number }) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.createPayout(tontineId, data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de l\'enregistrement du versement');
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const submitRepayment = async (tontineId: string, loanId: string, data: { amount: number, note: string }) => {
     setIsLoading(true);
     setError(null);
@@ -170,6 +183,7 @@ export const useFinancials = () => {
 
   return {
     listPayouts,
+    createPayout,
     markPayoutPaid,
     getMySavings,
     depositSavings,

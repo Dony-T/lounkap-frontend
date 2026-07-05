@@ -12,6 +12,9 @@ import { PayoutManagement } from '@/presentation/components/tontine/PayoutManage
 import { PaymentManagement } from '@/presentation/components/tontine/PaymentManagement';
 import { SavingsManagement } from '@/presentation/components/tontine/SavingsManagement';
 import { LoanManagement } from '@/presentation/components/tontine/LoanManagement';
+import { RequestLoanDrawer } from '@/presentation/components/tontine/RequestLoanDrawer';
+import { DepositSavingsDrawer } from '@/presentation/components/tontine/DepositSavingsDrawer';
+import { CreatePayoutDrawer } from '@/presentation/components/tontine/CreatePayoutDrawer';
 import { MemberTable } from '@/presentation/components/dashboard/MemberTable';
 import { useTontine } from '@/presentation/hooks/useTontine';
 import { useTontineContext } from '@/presentation/context/TontineContext';
@@ -32,6 +35,9 @@ export default function TontineDetailPage() {
   const [members, setMembers] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const [isLoanOpen, setIsLoanOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [isPayoutOpen, setIsPayoutOpen] = useState(false);
 
   const fetchData = async () => {
     console.log("TontineDetailPage: Starting fetchData for ID:", id);
@@ -137,6 +143,7 @@ export default function TontineDetailPage() {
             {activeTab === 'Prets' && (
               <Button
                 className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+                onClick={() => setIsLoanOpen(true)}
               >
                 <Plus size={16} />
                 Demander un prêt
@@ -145,6 +152,7 @@ export default function TontineDetailPage() {
             {activeTab === 'Payouts' && (
               <Button
                 className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+                onClick={() => setIsPayoutOpen(true)}
               >
                 <Plus size={16} />
                 Nouveau versement
@@ -153,6 +161,7 @@ export default function TontineDetailPage() {
             {activeTab === 'Epargne' && (
               <Button
                 className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+                onClick={() => setIsDepositOpen(true)}
               >
                 <Plus size={16} />
                 Déposer de l'épargne
@@ -228,6 +237,27 @@ export default function TontineDetailPage() {
       <AddMemberDrawer
         isOpen={isAddMemberOpen}
         onClose={() => setIsAddMemberOpen(false)}
+        tontineId={tontine.id}
+        onSuccess={fetchData}
+      />
+
+      <RequestLoanDrawer
+        isOpen={isLoanOpen}
+        onClose={() => setIsLoanOpen(false)}
+        tontineId={tontine.id}
+        onSuccess={fetchData}
+      />
+
+      <DepositSavingsDrawer
+        isOpen={isDepositOpen}
+        onClose={() => setIsDepositOpen(false)}
+        tontineId={tontine.id}
+        onSuccess={fetchData}
+      />
+
+      <CreatePayoutDrawer
+        isOpen={isPayoutOpen}
+        onClose={() => setIsPayoutOpen(false)}
         tontineId={tontine.id}
         onSuccess={fetchData}
       />
