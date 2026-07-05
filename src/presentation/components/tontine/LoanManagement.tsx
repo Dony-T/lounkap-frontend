@@ -45,15 +45,21 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
 
   // Robustly extract loans array
   let loansList = [];
+  console.log("LoanManagement: Data received for unboxing:", data);
+
   if (data?.loans) {
     if (Array.isArray(data.loans)) {
       loansList = data.loans;
     } else if ((data.loans as any).data && Array.isArray((data.loans as any).data)) {
       loansList = (data.loans as any).data;
+    } else if ((data.loans as any).items && Array.isArray((data.loans as any).items)) {
+      loansList = (data.loans as any).items;
     }
   } else if (Array.isArray(data)) {
     loansList = data;
   }
+
+  console.log("LoanManagement: Final processed loansList:", loansList);
 
   const stats = data?.stats || {};
 
