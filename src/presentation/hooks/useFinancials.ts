@@ -12,7 +12,16 @@ export const useFinancials = () => {
     setIsLoading(true);
     setError(null);
     try {
-      return await tontineRepository.listPayouts(tontineId);
+      const [payoutsData, statsData] = await Promise.all([
+        tontineRepository.listPayouts(tontineId),
+        tontineRepository.getPayoutStats(tontineId)
+      ]);
+
+      // Extraction robust from paginated/wrapped response
+      const payouts = payoutsData?.data?.payouts || payoutsData?.payouts || (Array.isArray(payoutsData) ? payoutsData : []);
+      const stats = statsData?.data || statsData;
+
+      return { payouts, stats };
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des versements');
       return null;
