@@ -25,12 +25,14 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
   const [stats, setStats] = useState<any>(null);
 
   const fetchData = async () => {
-    const [paymentsData] = await Promise.all([
-      getTontinePayments(tontineId),
-    ]);
+    const result = await getTontinePayments(tontineId);
 
-    if (paymentsData) setPayments(paymentsData);
-    // Note: Stats endpoint implementation might be needed if not fully in usePayment yet
+    if (result && !Array.isArray(result)) {
+      setPayments(result.payments || []);
+      setStats(result.stats || null);
+    } else if (Array.isArray(result)) {
+      setPayments(result);
+    }
   };
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Collecte Totale</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-slate">
-                {paymentsList.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0).toLocaleString()}
+                {(stats?.totalCollected || paymentsList.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
@@ -87,17 +89,21 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Nombre de paiements</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-primary">{paymentsList.length}</span>
+              <span className="text-2xl font-bold text-primary">
+                {stats?.paymentsCount || paymentsList.length}
+              </span>
               <span className="text-xs font-bold text-slate-grey">validés</span>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Statut Moyen</span>
+            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Taux de réussite</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-status-success">100%</span>
-              <span className="text-xs font-bold text-slate-grey">réussis</span>
+              <span className="text-2xl font-bold text-status-success">
+                {stats?.successRate || '100'}%
+              </span>
+              <span className="text-xs font-bold text-slate-grey">moyenne</span>
             </div>
           </CardContent>
         </Card>

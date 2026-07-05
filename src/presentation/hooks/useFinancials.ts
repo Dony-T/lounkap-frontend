@@ -49,11 +49,17 @@ export const useFinancials = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [operations, balance, globalStats] = await Promise.all([
+      const [opsData, balData, statsData] = await Promise.all([
         tontineRepository.getMySavingsOperations(tontineId),
         tontineRepository.getMySavingsBalance(tontineId),
         tontineRepository.getSavingsStats(tontineId)
       ]);
+
+      // Handle pagination/wrapping in operations
+      const operations = opsData?.data?.savings || opsData?.savings || (Array.isArray(opsData) ? opsData : []);
+      const balance = balData?.data || balData;
+      const globalStats = statsData?.data || statsData;
+
       return { operations, balance, globalStats };
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement de votre épargne');
@@ -109,10 +115,14 @@ export const useFinancials = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [loans, stats] = await Promise.all([
+      const [loansData, statsData] = await Promise.all([
         tontineRepository.listLoans(tontineId),
         tontineRepository.getLoansStats(tontineId)
       ]);
+
+      const loans = loansData?.data?.loans || loansData?.loans || (Array.isArray(loansData) ? loansData : []);
+      const stats = statsData?.data || statsData;
+
       return { loans, stats };
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des prêts');
