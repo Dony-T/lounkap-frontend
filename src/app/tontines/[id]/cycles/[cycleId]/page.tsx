@@ -32,16 +32,23 @@ export default function CycleDetailPage() {
   const [tontine, setTontine] = useState<any>(null);
 
   const fetchData = async () => {
+    console.log("CycleDetailPage: Fetching data for cycle:", cycleId);
     if (typeof id === 'string' && typeof cycleId === 'string') {
       const tontineData = await getTontineById(id);
       setTontine(tontineData);
 
-      const cycleData = await getCycleById(id, cycleId);
+      const [cycleData, statsData] = await Promise.all([
+        getCycleById(id, cycleId),
+        getCycleStats(id, cycleId)
+      ]);
+
+      console.log("CycleDetailPage: API cycleData:", cycleData);
+      console.log("CycleDetailPage: API statsData:", statsData);
+
       if (cycleData) {
         setCycle(cycleData);
       }
 
-      const statsData = await getCycleStats(id, cycleId);
       if (statsData) setStats(statsData);
     }
   };
@@ -119,13 +126,22 @@ export default function CycleDetailPage() {
                 <div className="flex flex-col gap-md">
                   <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Bénéficiaire</span>
                   <div className="flex items-center gap-xl">
-                    <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg border-2 border-white">
-                      <img src={cycle?.currentBeneficiary?.avatar} alt="Amina" className="w-full h-full object-cover" />
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-lg border-2 border-white bg-slate-100 flex items-center justify-center">
+                      {cycle?.currentBeneficiary?.avatar || cycle?.current_beneficiary?.avatar ? (
+                        <img src={cycle?.currentBeneficiary?.avatar || cycle?.current_beneficiary?.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <Users size={32} className="text-slate-grey/30" />
+                      )}
                     </div>
                     <div className="flex flex-col">
-                      <h2 className="text-2xl font-bold text-slate">{cycle?.currentBeneficiary?.name}</h2>
+                      <h2 className="text-2xl font-bold text-slate">
+                        {cycle?.currentBeneficiary?.name || cycle?.current_beneficiary?.name || "En attente"}
+                      </h2>
                       <p className="text-sm font-medium text-slate-grey">
-                        Tour n°{cycle?.currentBeneficiary?.turnNumber} • <span className="text-status-warning">{cycle?.currentBeneficiary?.status}</span>
+                        Tour n°{cycle?.currentBeneficiary?.turnNumber || cycle?.current_turn || 1} •
+                        <span className="text-status-warning ml-1">
+                          {cycle?.currentBeneficiary?.status || cycle?.status || "Collecte en cours"}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -135,12 +151,19 @@ export default function CycleDetailPage() {
                   <div className="flex justify-between items-end">
                     <span className="text-sm font-bold text-slate">Collecte du tour</span>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-lg font-bold text-primary">{cycle?.currentBeneficiary?.turnCollected?.toLocaleString()}</span>
-                      <span className="text-sm font-medium text-slate-grey">/ {cycle?.currentBeneficiary?.turnTarget?.toLocaleString()} FCFA</span>
+                      <span className="text-lg font-bold text-primary">
+                        {(cycle?.currentBeneficiary?.turnCollected || cycle?.collected_amount || 0).toLocaleString()}
+                      </span>
+                      <span className="text-sm font-medium text-slate-grey">
+                        / {(cycle?.currentBeneficiary?.turnTarget || cycle?.target_amount || 0).toLocaleString()} FCFA
+                      </span>
                     </div>
                   </div>
                   <div className="h-3 w-full bg-slate-light/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary rounded-full" style={{ width: '70%' }} />
+                    <div
+                      className="h-full bg-primary rounded-full transition-all duration-1000"
+                      style={{ width: `${Math.min(100, ((cycle?.currentBeneficiary?.turnCollected || cycle?.collected_amount || 0) / (cycle?.currentBeneficiary?.turnTarget || cycle?.target_amount || 1)) * 100)}%` }}
+                    />
                   </div>
                 </div>
 
