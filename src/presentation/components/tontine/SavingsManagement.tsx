@@ -26,6 +26,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
 
   const fetchSavings = async () => {
     const result = await getMySavings(tontineId);
+    console.log("SavingsManagement: Raw result from hook:", result);
     if (result) setData(result);
   };
 
@@ -39,6 +40,18 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
         <Loader2 className="animate-spin text-primary" size={40} />
       </div>
     );
+  }
+
+  // Robustly extract operations array
+  let operationsList = [];
+  if (data?.operations) {
+    if (Array.isArray(data.operations)) {
+      operationsList = data.operations;
+    } else if (data.operations.data && Array.isArray(data.operations.data)) {
+      operationsList = data.operations.data;
+    } else if (data.operations.savings && Array.isArray(data.operations.savings)) {
+      operationsList = data.operations.savings;
+    }
   }
 
   return (
@@ -128,7 +141,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-light/30">
-              {data?.operations?.map((op: any) => (
+              {operationsList.map((op: any) => (
                 <tr key={op.id} className="hover:bg-slate-light/5 transition-colors group">
                   <td className="px-lg py-lg">
                     <div className="flex items-center gap-md">
@@ -170,7 +183,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
                   </td>
                 </tr>
               ))}
-              {!data?.operations?.length && (
+              {operationsList.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-lg py-xxl text-center text-slate-grey italic">
                     Aucune opération enregistrée pour le moment.

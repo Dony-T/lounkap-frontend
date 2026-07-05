@@ -27,6 +27,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
 
   const fetchLoans = async () => {
     const result = await listLoans(tontineId);
+    console.log("LoanManagement: Raw result from hook:", result);
     if (result) setData(result);
   };
 
@@ -36,19 +37,30 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
 
   if (isLoading && !data) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex items-center justify-center py-20 w-full">
         <Loader2 className="animate-spin text-primary" size={40} />
       </div>
     );
   }
 
-  const loans = data?.loans || [];
+  // Robustly extract loans array
+  let loansList = [];
+  if (data?.loans) {
+    if (Array.isArray(data.loans)) {
+      loansList = data.loans;
+    } else if ((data.loans as any).data && Array.isArray((data.loans as any).data)) {
+      loansList = (data.loans as any).data;
+    }
+  } else if (Array.isArray(data)) {
+    loansList = data;
+  }
+
   const stats = data?.stats || {};
 
   return (
-    <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
       {/* Metrics Section */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-lg">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-lg w-full">
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">En-cours Total</span>
@@ -88,7 +100,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
       </div>
 
       {/* Loan List */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl w-full">
         {/* Active/Pending Loans */}
         <Card className="bg-white border-slate-light/50 shadow-air h-fit">
           <div className="px-xl py-lg border-b border-slate-light/30 flex justify-between items-center">
@@ -98,22 +110,22 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
             </h3>
           </div>
           <div className="flex flex-col divide-y divide-slate-light/30">
-            {loans.filter(l => l.status !== 'REPAID').map((loan: any) => (
+            {loansList.filter((l: any) => l.status !== 'REPAID').map((loan: any) => (
               <div key={loan.id} className="p-xl hover:bg-slate-light/5 transition-colors">
                 <div className="flex justify-between items-start mb-md">
                   <div className="flex items-center gap-md">
                     <div className="w-10 h-10 rounded-full bg-slate-light overflow-hidden flex items-center justify-center font-bold text-slate-grey">
-                      {loan.user?.name?.[0] || 'U'}
+                      {loan.user?.name?.[0] || loan.member?.name?.[0] || 'U'}
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-slate">{loan.user?.name || 'Inconnu'}</span>
+                      <span className="text-sm font-bold text-slate">{loan.user?.name || loan.member?.name || 'Inconnu'}</span>
                       <span className="text-[10px] text-slate-grey">{loan.reason}</span>
                     </div>
                   </div>
                   <Badge
                     className={cn(
                       "border-none text-[8px] font-bold",
-                      loan.status === 'APPROVED' ? "bg-status-success/10 text-status-success" : "bg-status-warning/10 text-status-warning"
+                      loan.status === 'APPROVED' || loan.status === 'ACTIVE' ? "bg-status-success/10 text-status-success" : "bg-status-warning/10 text-status-warning"
                     )}
                   >
                     {loan.status}
@@ -130,7 +142,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
                 </div>
               </div>
             ))}
-            {!loans.filter(l => l.status !== 'REPAID').length && (
+            {loansList.filter((l: any) => l.status !== 'REPAID').length === 0 && (
               <div className="p-xxl text-center text-slate-grey italic text-sm">
                 Aucun prêt actif.
               </div>
@@ -152,22 +164,16 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
                 <HandCoins size={24} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-slate-grey uppercase">Intérêts collectés</span>
-                <span className="text-lg font-bold text-primary">45,000 FCFA</span>
+                <span className="text-[10px] font-bold text-slate-grey uppercase">Total déjà remboursé</span>
+                <span className="text-lg font-bold text-primary">{(stats.totalRepaid || 0).toLocaleString()} FCFA</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-md">
               <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Historique Récent</span>
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex justify-between items-center py-sm border-b border-slate-light/30 last:border-0">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold text-slate">Remboursement Partiel</span>
-                    <span className="text-[10px] text-slate-grey">12 Mars 2024</span>
-                  </div>
-                  <span className="text-xs font-bold text-status-success">+ 50,000 FCFA</span>
-                </div>
-              ))}
+              <div className="p-xxl text-center text-slate-grey italic text-sm border-t border-slate-light/30 pt-md">
+                Historique des remboursements bientôt disponible.
+              </div>
             </div>
 
             <button className="text-sm font-bold text-primary hover:underline w-full text-center mt-md">
