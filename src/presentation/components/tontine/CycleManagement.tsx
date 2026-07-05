@@ -28,7 +28,9 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const fetchCycles = async () => {
+    console.log("CycleManagement: Fetching cycles for tontine:", tontineId);
     const data = await listCycles(tontineId);
+    console.log("CycleManagement: Raw API response for cycles:", data);
     if (data) setCycles(data);
   };
 
@@ -37,8 +39,19 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
   }, [tontineId]);
 
   const cyclesList = Array.isArray(cycles) ? cycles : [];
-  const activeCycle = cyclesList.find(c => c.status === 'ACTIVE' || c.status === 'IN_PROGRESS');
-  const pastCycles = cyclesList.filter(c => c.status !== 'ACTIVE' && c.status !== 'IN_PROGRESS');
+  console.log("CycleManagement: Full cycles list count:", cyclesList.length);
+
+  const activeCycle = cyclesList.find(c => {
+    const s = c.status?.toUpperCase();
+    return s === 'ACTIVE' || s === 'IN_PROGRESS' || s === 'PENDING' || s === 'STARTED';
+  });
+
+  const pastCycles = cyclesList.filter(c => {
+    const s = c.status?.toUpperCase();
+    return s !== 'ACTIVE' && s !== 'IN_PROGRESS' && s !== 'PENDING' && s !== 'STARTED';
+  });
+
+  console.log("CycleManagement: Detected active cycle:", activeCycle);
 
   const handleNextTurn = async (cycleId: string) => {
     if (await advanceCycleTurn(tontineId, cycleId)) {

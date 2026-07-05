@@ -178,6 +178,32 @@ export const useTontine = () => {
     }
   };
 
+  const getCycleById = async (tontineId: string, cycleId: string): Promise<any | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getCycleById(tontineId, cycleId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du chargement du cycle");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getCycleStats = async (tontineId: string, cycleId: string): Promise<any | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await tontineRepository.getCycleStats(tontineId, cycleId);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du chargement des statistiques du cycle");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const advanceCycleTurn = async (tontineId: string, cycleId: string): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
@@ -247,6 +273,8 @@ export const useTontine = () => {
     // Cycles
     createCycle,
     listCycles,
+    getCycleById,
+    getCycleStats,
     advanceCycleTurn,
     closeCycle,
     deleteCycle,

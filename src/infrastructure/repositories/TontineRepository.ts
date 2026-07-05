@@ -102,7 +102,14 @@ export class TontineRepository implements ITontineRepository {
 
   async listCycles(tontineId: string): Promise<any[]> {
     const response = await apiClient.get(`/tontines/${tontineId}/cycles`);
-    return response.data.data || [];
+    console.log("TontineRepository: listCycles Raw Response:", response.data);
+
+    // Check if data is array or wrapped in { cycles: [] }
+    const apiData = response.data.data;
+    if (Array.isArray(apiData)) return apiData;
+    if (apiData && Array.isArray(apiData.cycles)) return apiData.cycles;
+
+    return [];
   }
 
   async getCycleById(tontineId: string, cycleId: string): Promise<any> {
