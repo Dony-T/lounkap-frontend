@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { TontineProvider } from '@/presentation/context/TontineContext';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
