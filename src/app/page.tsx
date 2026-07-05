@@ -104,10 +104,6 @@ export default function Home() {
             <p className="text-status-error font-bold">Format de données invalide reçu du serveur</p>
           </div>
         )}
-
-        <div className="w-full">
-          <SummarySection totalTontines={Array.isArray(tontines) ? tontines.length : 0} />
-        </div>
       </div>
 
       <CreateTontineDrawer
