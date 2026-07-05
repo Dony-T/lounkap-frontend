@@ -23,24 +23,27 @@ interface LoanManagementProps {
 
 export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
   const { listLoans, isLoading } = useFinancials();
-  const [loans, setLoans] = useState<any[]>([]);
+  const [data, setData] = useState<{ loans: any[], stats: any } | null>(null);
 
   const fetchLoans = async () => {
     const result = await listLoans(tontineId);
-    if (result) setLoans(result);
+    if (result) setData(result);
   };
 
   useEffect(() => {
     fetchLoans();
   }, [tontineId]);
 
-  if (isLoading && !loans.length) {
+  if (isLoading && !data) {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="animate-spin text-primary" size={40} />
       </div>
     );
   }
+
+  const loans = data?.loans || [];
+  const stats = data?.stats || {};
 
   return (
     <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -50,7 +53,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">En-cours Total</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-slate">3,400,000</span>
+              <span className="text-xl font-bold text-slate">{(stats.outstandingBalance || 0).toLocaleString()}</span>
               <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
@@ -59,26 +62,26 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Prêts Actifs</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-primary">12</span>
+              <span className="text-xl font-bold text-primary">{stats.activeLoansCount || 0}</span>
               <span className="text-[10px] font-bold text-slate-grey">Membres</span>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white border-slate-light/50 shadow-air border-l-4 border-l-status-success">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Capacité de Prêt</span>
+            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Total Prêté</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-status-success">450,000</span>
+              <span className="text-xl font-bold text-status-success">{(stats.totalLent || 0).toLocaleString()}</span>
               <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
         </Card>
         <Card className="bg-white border-slate-light/50 shadow-air border-l-4 border-l-status-error">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Impayés</span>
+            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Déjà Remboursé</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-status-error">0</span>
-              <span className="text-[10px] font-bold text-slate-grey">Retard</span>
+              <span className="text-xl font-bold text-slate">{(stats.totalRepaid || 0).toLocaleString()}</span>
+              <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
         </Card>

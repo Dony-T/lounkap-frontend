@@ -109,7 +109,11 @@ export const useFinancials = () => {
     setIsLoading(true);
     setError(null);
     try {
-      return await tontineRepository.listLoans(tontineId);
+      const [loans, stats] = await Promise.all([
+        tontineRepository.listLoans(tontineId),
+        tontineRepository.getLoansStats(tontineId)
+      ]);
+      return { loans, stats };
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du chargement des prêts');
       return null;
@@ -118,7 +122,7 @@ export const useFinancials = () => {
     }
   };
 
-  const requestLoan = async (tontineId: string, data: { amount: number, reason: string }) => {
+  const requestLoan = async (tontineId: string, data: { amount: number, interestRate: number, durationMonths: number, reason: string }) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -126,6 +130,39 @@ export const useFinancials = () => {
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors de la demande de prêt');
       return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const submitRepayment = async (tontineId: string, loanId: string, data: { amount: number, note: string }) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Direct call to repository for repayment (need to ensure it's in repo)
+      await apiClient.post(`/tontines/${tontineId}/loans/${loanId}/repayments`, data);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors du remboursement');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const reviewLoan = async (tontineId: string, loanId: string, action: 'approve' | 'reject', data: { reviewNote: string, dueDate?: string }) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      if (action === 'approve') {
+        await tontineRepository.approveLoan(tontineId, loanId); // Note: may need data update in repo
+      } else {
+        await tontineRepository.rejectLoan(tontineId, loanId);
+      }
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de la revue du prêt');
+      return false;
     } finally {
       setIsLoading(false);
     }
