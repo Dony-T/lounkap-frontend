@@ -87,21 +87,6 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
         </Card>
       </div>
 
-      {/* Action Header */}
-      <div className="flex justify-between items-center bg-white/80 backdrop-blur-md rounded-3xl p-md border border-slate-light/30 shadow-sm">
-        <div className="flex items-center gap-md px-md">
-          <Scale size={24} className="text-primary" />
-          <div className="flex flex-col">
-            <h2 className="text-lg font-bold text-slate tracking-tight">Gestion des Prêts</h2>
-            <p className="text-[10px] text-slate-grey font-medium uppercase">Accès au crédit et remboursements</p>
-          </div>
-        </div>
-        <Button className="gap-sm bg-primary hover:bg-primary/90 text-white border-none shadow-lg shadow-primary/20 px-lg h-11 rounded-2xl">
-          <Plus size={20} />
-          <span className="font-bold">Demander un prêt</span>
-        </Button>
-      </div>
-
       {/* Loan List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
         {/* Active/Pending Loans */}
