@@ -62,8 +62,24 @@ export class TontineRepository implements ITontineRepository {
   }
 
   async getMembers(tontineId: string): Promise<any[]> {
+    console.log(`TontineRepository: Fetching members for tontine: ${tontineId}`);
     const response = await apiClient.get<any>(`/tontines/${tontineId}/members`);
-    return response.data.data || [];
+    console.log("TontineRepository: getMembers Raw Response:", response.data);
+
+    // Based on logs: data is wrapped in { members: [], total: 3, ... }
+    const apiData = response.data.data || response.data;
+
+    if (apiData && Array.isArray(apiData.members)) {
+      console.log("TontineRepository: Extracted members array:", apiData.members);
+      return apiData.members;
+    }
+
+    if (Array.isArray(apiData)) {
+      return apiData;
+    }
+
+    console.warn("TontineRepository: Could not find members array in response", apiData);
+    return [];
   }
 
   async getMemberById(tontineId: string, userId: string): Promise<any> {
