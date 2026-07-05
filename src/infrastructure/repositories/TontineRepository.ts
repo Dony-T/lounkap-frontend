@@ -66,7 +66,7 @@ export class TontineRepository implements ITontineRepository {
     const response = await apiClient.get<any>(`/tontines/${tontineId}/members`);
     console.log("TontineRepository: getMembers Raw Response:", response.data);
 
-    // Based on logs: data is wrapped in { members: [], total: 3, ... }
+
     const apiData = response.data.data || response.data;
 
     if (apiData && Array.isArray(apiData.members)) {
