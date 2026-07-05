@@ -52,11 +52,10 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-md">
         <div className="relative flex-1 w-full md:max-w-md">
-          <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey" size={18} />
           <input
             type="text"
             placeholder="Rechercher une transaction..."
-            className="w-full pl-xxl pr-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
+            className="w-full px-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
           />
         </div>
         <div className="flex items-center gap-sm w-full md:w-auto">

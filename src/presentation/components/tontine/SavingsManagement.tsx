@@ -96,17 +96,12 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
       {/* Action and Search */}
       <div className="flex justify-between items-center gap-md mt-2">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey" size={18} />
           <input
             type="text"
             placeholder="Filtrer vos opérations..."
-            className="w-full pl-xxl pr-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
+            className="w-full px-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
           />
         </div>
-        <Button className="gap-sm bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none shadow-md shadow-status-warning/20 h-11 px-lg">
-          <Plus size={18} />
-          <span className="font-bold">Déposer de l'épargne</span>
-        </Button>
       </div>
 
       {/* Operations Table */}

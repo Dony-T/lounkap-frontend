@@ -134,6 +134,14 @@ export default function TontineDetailPage() {
           </div>
 
           <div className="flex items-center gap-md">
+            {activeTab === 'Epargne' && (
+              <Button
+                className="gap-sm h-10 px-md rounded-xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold text-xs"
+              >
+                <Plus size={16} />
+                Déposer de l'épargne
+              </Button>
+            )}
             {(activeTab === 'Aperçu' || activeTab === 'Membres') && (
               <>
                 {(tontine as any).myRole === 'PRESIDENT' && (
