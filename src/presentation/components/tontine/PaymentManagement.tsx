@@ -49,7 +49,7 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
 
   return (
     <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Search and Filters */}
+      {/* Search and Filters - Flat Layout */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-md">
         <div className="relative flex-1 w-full md:max-w-md">
           <input

@@ -66,12 +66,14 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               <TrendingUp size={20} className="text-slate-grey/30" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate">1,250,000</span>
+              <span className="text-2xl font-bold text-slate">
+                {(data?.circleStats?.totalSaved || 0).toLocaleString()}
+              </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
             <div className="flex items-center gap-1 mt-1">
               <div className="h-1 flex-1 bg-slate-light/50 rounded-full overflow-hidden">
-                <div className="h-full w-[65%] bg-status-success rounded-full" />
+                <div className="h-full bg-status-success rounded-full" style={{ width: '65%' }} />
               </div>
               <span className="text-[10px] font-bold text-status-success">65%</span>
             </div>
@@ -85,7 +87,9 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               <CircleDollarSign size={20} className="text-slate-grey/30" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-slate">150,000</span>
+              <span className="text-2xl font-bold text-slate">
+                {(data?.collectiveBalance || 0).toLocaleString()}
+              </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
             <button className="text-[10px] font-bold text-primary hover:underline transition-all">Consulter l'historique de solidarité</button>
@@ -93,9 +97,9 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
         </Card>
       </div>
 
-      {/* Action and Search */}
-      <div className="flex justify-between items-center gap-md mt-2">
-        <div className="relative flex-1 max-w-md">
+      {/* Search Input - Flat Layout */}
+      <div className="mt-2">
+        <div className="relative max-w-md">
           <input
             type="text"
             placeholder="Filtrer vos opérations..."

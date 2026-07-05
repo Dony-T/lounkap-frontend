@@ -51,11 +51,11 @@ export const useFinancials = () => {
     }
   };
 
-  const depositSavings = async (tontineId: string, amount: number) => {
+  const depositSavings = async (tontineId: string, data: { amount: number, note?: string }) => {
     setIsLoading(true);
     setError(null);
     try {
-      return await tontineRepository.depositSavings(tontineId, { amount });
+      return await tontineRepository.depositSavings(tontineId, data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erreur lors du dépôt');
       return null;
