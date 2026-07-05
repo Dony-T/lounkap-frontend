@@ -67,22 +67,6 @@ export const PayoutManagement = () => {
         </Card>
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex justify-between items-center gap-md">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey" size={18} />
-          <input
-            type="text"
-            placeholder="Rechercher un bénéficiaire..."
-            className="w-full pl-xxl pr-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
-          />
-        </div>
-        <Button className="gap-sm bg-status-warning hover:bg-status-warning/90 border-none text-slate-dark shadow-md shadow-status-warning/20 h-11 px-lg">
-          <Plus size={18} />
-          <span className="font-bold">Nouveau versement</span>
-        </Button>
-      </div>
-
       {/* Table Section */}
       <Card className="bg-white border-slate-light/50 shadow-air overflow-hidden">
         <div className="overflow-x-auto">
