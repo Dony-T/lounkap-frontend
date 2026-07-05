@@ -8,16 +8,18 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
-    <div className="flex min-h-screen bg-background text-slate">
-      <Sidebar />
-      <div className="flex-1 ml-64 flex flex-col">
-        <TopBar />
-        <main className="p-xxl pt-md w-full">
-          <div className="max-w-[1440px] w-full mx-auto">
-            {children}
-          </div>
-        </main>
+    <TontineProvider>
+      <div className="min-h-screen bg-background text-slate relative">
+        <Sidebar />
+        <div className="pl-64 flex flex-col min-h-screen">
+          <TopBar />
+          <main className="p-xxl pt-md flex-1">
+            <div className="max-w-[1440px] mx-auto w-full">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </TontineProvider>
   );
 };
