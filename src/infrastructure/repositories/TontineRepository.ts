@@ -221,8 +221,8 @@ export class TontineRepository implements ITontineRepository {
     return response.data.data;
   }
 
-  async reviewSaving(tontineId: string, savingId: string, action: 'APPROVE' | 'REJECT'): Promise<void> {
-    await apiClient.patch(`/tontines/${tontineId}/savings/${savingId}/review`, { action });
+  async reviewSaving(tontineId: string, savingId: string, status: 'APPROVED' | 'REJECTED'): Promise<void> {
+    await apiClient.patch(`/tontines/${tontineId}/savings/${savingId}/review`, { status });
   }
 
   async createCollectiveSaving(tontineId: string, data: any): Promise<any> {

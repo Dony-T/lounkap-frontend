@@ -21,7 +21,7 @@ interface SavingsManagementProps {
 }
 
 export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
-  const { getMySavings, depositSavings, isLoading } = useFinancials();
+  const { getMySavings, isLoading } = useFinancials();
   const [data, setData] = useState<any>(null);
 
   const fetchSavings = async () => {
@@ -52,31 +52,29 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               <Wallet size={20} className="text-white/50" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{(data?.balance?.amount || 0).toLocaleString()}</span>
+              <span className="text-3xl font-bold">{(data?.balance?.balance || 0).toLocaleString()}</span>
               <span className="text-sm font-bold text-white/70">FCFA</span>
             </div>
-            <p className="text-[10px] font-medium text-white/60 mt-1 italic">Dernière mise à jour: Aujourd'hui</p>
+            <div className="flex justify-between text-[10px] text-white/60 mt-1">
+              <span>Dépôts: {(data?.balance?.totalDeposits || 0).toLocaleString()}</span>
+              <span>Retraits: {(data?.balance?.totalWithdrawals || 0).toLocaleString()}</span>
+            </div>
           </CardContent>
         </Card>
 
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-md">
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Total Épargné (Cercle)</span>
+              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Total Épargné (Individuel)</span>
               <TrendingUp size={20} className="text-slate-grey/30" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-slate">
-                {(data?.circleStats?.totalSaved || 0).toLocaleString()}
+                {(data?.globalStats?.totalIndividualSavings || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <div className="flex items-center gap-1 mt-1">
-              <div className="h-1 flex-1 bg-slate-light/50 rounded-full overflow-hidden">
-                <div className="h-full bg-status-success rounded-full" style={{ width: '65%' }} />
-              </div>
-              <span className="text-[10px] font-bold text-status-success">65%</span>
-            </div>
+            <p className="text-[10px] font-medium text-slate-grey/60 mt-1">Épargne cumulée de {data?.globalStats?.activeSaversCount || 0} membres</p>
           </CardContent>
         </Card>
 
@@ -88,11 +86,11 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-slate">
-                {(data?.collectiveBalance || 0).toLocaleString()}
+                {(data?.globalStats?.totalCollectiveSavings || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <button className="text-[10px] font-bold text-primary hover:underline transition-all">Consulter l'historique de solidarité</button>
+            <button className="text-[10px] font-bold text-primary hover:underline transition-all text-left">Gérer les fonds de groupe</button>
           </CardContent>
         </Card>
       </div>
