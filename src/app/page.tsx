@@ -43,7 +43,33 @@ export default function Home() {
     <DashboardLayout>
       <div className="flex flex-col gap-xxl w-full">
         <header className="flex justify-between items-start w-full">
-          {/* ... existing header content ... */}
+          <div className="flex flex-col gap-sm">
+            <div className="flex items-center gap-xs text-xs font-medium text-slate-grey mb-1">
+              <span>LounKap</span>
+              <ChevronRight size={12} />
+              <span className="text-primary font-bold">Tableau de bord</span>
+            </div>
+            <h1 className="text-4xl font-bold text-slate tracking-tight">Mes Tontines</h1>
+            <p className="text-sm text-slate-grey">Gérez vos cercles d'épargne et suivez vos cotisations.</p>
+          </div>
+
+          <div className="flex gap-md mt-6">
+            <Button
+              variant="secondary"
+              className="gap-sm h-11 px-lg rounded-2xl border-slate-light text-slate font-bold shadow-sm"
+              onClick={() => setIsJoinOpen(true)}
+            >
+              <UserPlus size={18} />
+              Rejoindre
+            </Button>
+            <Button
+              className="gap-sm h-11 px-lg rounded-2xl bg-status-warning hover:bg-status-warning/90 text-slate-dark border-none font-bold shadow-lg shadow-status-warning/30"
+              onClick={() => setIsCreateOpen(true)}
+            >
+              <Plus size={18} />
+              Créer une tontine
+            </Button>
+          </div>
         </header>
 
         {isLoading ? (
