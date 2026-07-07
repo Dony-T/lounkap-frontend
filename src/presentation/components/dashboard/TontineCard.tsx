@@ -56,7 +56,7 @@ export const TontineCard = (props: any) => {
   const progress = totalCount > 0 ? (currentCount / totalCount) * 100 : 0;
 
   const getFrequencyLabel = (freq: string) => {
-    const f = freq?.toUpperCase();
+    const f = freq?.toString().trim().toUpperCase();
     if (f === 'WEEKLY') return 'Hebdomadaire';
     if (f === 'MONTHLY') return 'Mensuelle';
     return freq || 'N/A';
@@ -105,16 +105,16 @@ export const TontineCard = (props: any) => {
 
           <div className="flex justify-between items-center pt-md border-t border-slate-light/50">
             <div className="flex flex-col gap-1">
-              <span className="text-[9px] uppercase tracking-widest text-slate-grey font-bold">Rôle</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-grey font-bold">Rôle</span>
               <span className={cn(
-                "badge text-[9px]",
+                "badge text-[10px]",
                 (role === 'PRESIDENT' || role === 'ADMIN') ? "bg-secondary/10 text-secondary" : "bg-slate-light/50 text-slate-grey"
               )}>
                 {role}
               </span>
             </div>
             <div className="flex flex-col gap-1 items-end">
-              <span className="text-[9px] uppercase tracking-widest text-slate-grey font-bold">Code</span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-grey font-bold">Code</span>
               <span className="text-xs font-bold mono text-secondary">{displayCode}</span>
             </div>
           </div>

@@ -12,7 +12,7 @@ interface StatCardsProps {
 
 export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }: StatCardsProps) => {
   const getFrequencyLabel = (freq: string) => {
-    const f = freq?.toUpperCase();
+    const f = freq?.toString().trim().toUpperCase();
     if (f === 'WEEKLY') return 'Hebdomadaire';
     if (f === 'MONTHLY') return 'Mensuelle';
     return freq || 'N/A';
@@ -53,7 +53,7 @@ export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }:
               <stat.icon size={20} />
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">{stat.label}</span>
+              <span className="text-xs uppercase tracking-widest font-bold text-slate-grey">{stat.label}</span>
               <span className={cn(
                 "text-lg font-bold text-slate mt-1",
                 stat.value?.toString().includes('FCFA') && "mono"
