@@ -64,7 +64,7 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
 
   // Mapping using stats if available, fallback to basic cycle object
   const displayFrequency = activeCycleStats?.frequency || (activeCycle as any)?.tontine?.frequency || "N/A";
-  const collected = activeCycleStats?.totalCollected || activeCycle?.collectedAmount || (activeCycle as any)?.collected_amount || 0;
+  const collected = activeCycleStats?.collecteDuTour || activeCycleStats?.totalCollected || activeCycle?.collectedAmount || (activeCycle as any)?.collected_amount || 0;
   const target = activeCycleStats?.globalPot || activeCycle?.targetAmount || (activeCycle as any)?.target_amount || 0;
   const progress = activeCycleStats?.completionRate || (target > 0 ? Math.round((collected / target) * 100) : 0);
   const beneficiaryName = activeCycleStats?.beneficiary || activeCycle?.currentBeneficiary?.name || "En attente";

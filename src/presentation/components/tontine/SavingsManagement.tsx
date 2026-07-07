@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 import { useFinancials } from '@/presentation/hooks/useFinancials';
+import { useSearchParams } from 'next/navigation';
 
 interface SavingsManagementProps {
   tontineId: string;
@@ -23,6 +24,8 @@ interface SavingsManagementProps {
 export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
   const { getMySavings, isLoading } = useFinancials();
   const [data, setData] = useState<any>(null);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q')?.toLowerCase() || '';
 
   const fetchSavings = async () => {
     const result = await getMySavings(tontineId);
@@ -53,6 +56,12 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
       operationsList = data.operations.savings;
     }
   }
+
+  const filteredOperations = operationsList.filter((op: any) =>
+    (op.type || '').toLowerCase().includes(searchQuery) ||
+    (op.status || '').toLowerCase().includes(searchQuery) ||
+    (op.amount?.toString() || '').includes(searchQuery)
+  );
 
   return (
     <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -130,7 +139,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-light/30">
-              {operationsList.map((op: any) => (
+              {filteredOperations.map((op: any) => (
                 <tr key={op.id} className="hover:bg-slate-light/5 transition-colors group">
                   <td className="px-lg py-lg">
                     <div className="flex items-center gap-md">
@@ -160,7 +169,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
                     <Badge
                       className={cn(
                         "border-none text-[9px] font-bold px-3 py-1",
-                        op.status === 'COMPLETED' ? "bg-status-success/10 text-status-success" :
+                        op.status === 'COMPLETED' || op.status === 'APPROVED' ? "bg-status-success/10 text-status-success" :
                         op.status === 'PENDING' ? "bg-status-warning/10 text-status-warning" : "bg-status-error/10 text-status-error"
                       )}
                     >
@@ -172,10 +181,10 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
                   </td>
                 </tr>
               ))}
-              {operationsList.length === 0 && (
+              {filteredOperations.length === 0 && (
                 <tr>
                   <td colSpan={5} className="px-lg py-xxl text-center text-slate-grey italic">
-                    Aucune opération enregistrée pour le moment.
+                    {searchQuery ? `Aucune opération ne correspond à "${searchQuery}"` : "Aucune opération enregistrée pour le moment."}
                   </td>
                 </tr>
               )}

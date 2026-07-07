@@ -5,17 +5,33 @@ import { Bell, User, Search, Copy, Plus, UserPlus } from 'lucide-react';
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Button } from '@/presentation/components/ui/Button';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 export const TopBar = () => {
   const { user, getProfile } = useAuth();
   const { currentTontine } = useTontineContext();
-  const [searchValue, setSearchValue] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
 
   useEffect(() => {
     if (!user) {
       getProfile();
     }
   }, [getProfile, user]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set('q', value);
+    } else {
+      params.delete('q');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <header className="flex flex-col border-b border-slate-light bg-white sticky top-0 z-30">
@@ -27,12 +43,9 @@ export const TopBar = () => {
               <div className="flex flex-col">
                 <h2 className="text-2xl font-bold text-slate leading-tight tracking-tight">{currentTontine.name || (currentTontine as any).title}</h2>
                 <div className="flex items-center gap-sm mt-0.5">
-                  <span className="badge-success h-4 px-1.5 text-[9px] font-bold">{currentTontine.status || 'Active'}</span>
-                  <div className="flex items-center gap-1 text-[9px] font-bold text-slate-grey mono">
+                  <span className="badge-success h-4 px-1.5 text-xs font-bold">{currentTontine.status || 'Active'}</span>
+                  <div className="flex items-center gap-1 text-xs font-bold text-slate-grey mono">
                     <span className="uppercase tracking-wider">CODE: {currentTontine.inviteCode || (currentTontine as any).code}</span>
-                    <button className="hover:text-primary transition-colors">
-                      <Copy size={10} />
-                    </button>
                   </div>
                 </div>
               </div>
@@ -45,9 +58,9 @@ export const TopBar = () => {
             <Search className="absolute left-md top-1/2 -translate-y-1/2 text-slate-grey group-focus-within:text-primary transition-colors" size={18} />
             <input
               type="text"
-              placeholder="Rechercher une tontine, un membre ou une transaction..."
+              placeholder={currentTontine ? "Rechercher dans cette tontine..." : "Rechercher une tontine, un membre..."}
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full pl-xxl pr-md py-sm bg-slate-light/30 border border-transparent rounded-2xl text-sm focus:outline-none focus:bg-white focus:border-primary/30 focus:shadow-lg focus:shadow-primary/5 transition-all h-11 font-medium"
             />
           </div>

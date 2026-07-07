@@ -71,7 +71,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">En-cours Total</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-slate">{(stats.outstandingBalance || 0).toLocaleString()}</span>
+              <span className="text-xl font-bold text-slate">{(stats.remainingToRepay || stats.outstandingBalance || 0).toLocaleString()}</span>
               <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
@@ -80,7 +80,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Prêts Actifs</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-primary">{stats.activeLoansCount || 0}</span>
+              <span className="text-xl font-bold text-primary">{stats.loans?.active || stats.activeLoansCount || 0}</span>
               <span className="text-[10px] font-bold text-slate-grey">Membres</span>
             </div>
           </CardContent>
@@ -89,7 +89,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Total Prêté</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-status-success">{(stats.totalLent || 0).toLocaleString()}</span>
+              <span className="text-xl font-bold text-status-success">{(stats.activeLoansAmount || stats.totalLent || 0).toLocaleString()}</span>
               <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>
@@ -98,7 +98,7 @@ export const LoanManagement = ({ tontineId }: LoanManagementProps) => {
           <CardContent className="p-xl flex flex-col gap-sm">
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Déjà Remboursé</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-slate">{(stats.totalRepaid || 0).toLocaleString()}</span>
+              <span className="text-xl font-bold text-slate">{(stats.activeLoansRepaid || stats.totalRepaid || 0).toLocaleString()}</span>
               <span className="text-[10px] font-bold text-slate-grey">FCFA</span>
             </div>
           </CardContent>

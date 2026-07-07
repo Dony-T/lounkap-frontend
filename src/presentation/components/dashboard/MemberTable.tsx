@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MoreVertical, ChevronLeft, ChevronRight, UserCog, UserMinus, ShieldAlert, CheckCircle } from 'lucide-react';
 import { Badge } from '@/presentation/components/ui/Badge';
 import { cn } from '@/presentation/utils/cn';
+import { useSearchParams } from 'next/navigation';
 
 interface Member {
   id: string;
@@ -34,7 +35,16 @@ const roleConfig = {
 
 export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q')?.toLowerCase() || '';
+
   const membersList = Array.isArray(members) ? members : [];
+
+  const filteredMembers = membersList.filter((m: any) =>
+    (m.user?.name || '').toLowerCase().includes(searchQuery) ||
+    (m.user?.email || '').toLowerCase().includes(searchQuery) ||
+    (m.user?.phone || '').toLowerCase().includes(searchQuery)
+  );
 
   if (isLoading) {
     return (
@@ -67,7 +77,7 @@ export const MemberTable = ({ members, isLoading }: MemberTableProps) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-light/30">
-            {membersList.map((membership: any) => (
+            {filteredMembers.map((membership: any) => (
               <tr key={membership.id} className="hover:bg-slate-light/5 transition-colors group relative">
                 <td className="px-lg py-md">
                   <div className="flex items-center gap-md">

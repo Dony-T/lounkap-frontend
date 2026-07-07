@@ -3,9 +3,7 @@ import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { Button } from '@/presentation/components/ui/Button';
 import { Badge } from '@/presentation/components/ui/Badge';
 import {
-  Search,
   Filter,
-  ArrowUpRight,
   ArrowDownLeft,
   Calendar,
   MoreVertical,
@@ -14,6 +12,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 import { usePayment } from '@/presentation/hooks/usePayment';
+import { useSearchParams } from 'next/navigation';
 
 interface PaymentManagementProps {
   tontineId: string;
@@ -23,6 +22,8 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
   const { getTontinePayments, isLoading } = usePayment();
   const [payments, setPayments] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('q')?.toLowerCase() || '';
 
   const fetchData = async () => {
     const result = await getTontinePayments(tontineId);
@@ -49,9 +50,16 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
 
   const paymentsList = Array.isArray(payments) ? payments : [];
 
+  const filteredPayments = paymentsList.filter((p: any) =>
+    (p.user?.name || '').toLowerCase().includes(searchQuery) ||
+    (p.description || '').toLowerCase().includes(searchQuery) ||
+    (p.type || '').toLowerCase().includes(searchQuery) ||
+    (p.status || '').toLowerCase().includes(searchQuery)
+  );
+
   return (
     <div className="flex flex-col gap-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Search and Filters - Flat Layout */}
+      {/* Filters - Flat Layout */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-md">
         <div className="relative flex-1 w-full md:max-w-md">
           <input
@@ -79,7 +87,7 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Collecte Totale</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-slate">
-                {(stats?.totalCollected || paymentsList.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)).toLocaleString()}
+                {(stats?.totalCollected || filteredPayments.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
@@ -90,7 +98,7 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
             <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Nombre de paiements</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-primary">
-                {stats?.paymentsCount || paymentsList.length}
+                {stats?.successCount || stats?.paymentsCount || filteredPayments.length}
               </span>
               <span className="text-xs font-bold text-slate-grey">validés</span>
             </div>
@@ -124,7 +132,7 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-light/30">
-              {paymentsList.map((payment) => (
+              {filteredPayments.map((payment) => (
                 <tr key={payment.id} className="hover:bg-slate-light/5 transition-colors group">
                   <td className="px-lg py-lg">
                     <div className="flex items-center gap-md">
@@ -170,10 +178,10 @@ export const PaymentManagement = ({ tontineId }: PaymentManagementProps) => {
                   </td>
                 </tr>
               ))}
-              {paymentsList.length === 0 && (
+              {filteredPayments.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-lg py-xxl text-center text-slate-grey italic">
-                    Aucune transaction trouvée pour cette tontine.
+                    {searchQuery ? `Aucune transaction ne correspond à "${searchQuery}"` : "Aucune transaction trouvée pour cette tontine."}
                   </td>
                 </tr>
               )}
