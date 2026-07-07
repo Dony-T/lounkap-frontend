@@ -3,24 +3,31 @@ import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { Info, ArrowRight } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 
-export const InfoCards = () => {
+interface InfoCardsProps {
+  description?: string;
+  membersCount?: number;
+}
+
+export const InfoCards = ({ description, membersCount = 0 }: InfoCardsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-xl w-full">
       <Card className="bg-inverse-surface text-inverse-on-surface">
-        <CardContent className="flex flex-col gap-lg">
+        <CardContent className="flex flex-col gap-lg p-xl">
           <h4 className="text-xl font-bold tracking-tight">Note du Projet</h4>
-          <p className="text-sm text-inverse-on-surface/70 leading-relaxed">
-            Objectif: Achat d'un terrain titré à Yaoundé. Date limite de complétion: Décembre 2025.
+          <p className="text-sm text-inverse-on-surface/70 leading-relaxed min-h-[60px]">
+            {description || "Aucune description fournie pour ce projet de tontine."}
           </p>
-          <div className="flex -space-x-2">
+          <div className="flex -space-x-2 mt-auto pt-4 border-t border-white/10">
             {[1, 2, 3].map((i) => (
               <div key={i} className="w-8 h-8 rounded-full border-2 border-inverse-surface overflow-hidden bg-slate-grey">
-                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=user${i}`} alt="Member" />
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=user${i + (membersCount % 10)}`} alt="Member" />
               </div>
             ))}
-            <div className="w-8 h-8 rounded-full border-2 border-inverse-surface bg-white/10 flex items-center justify-center text-[10px] font-bold">
-              +12
-            </div>
+            {membersCount > 3 && (
+              <div className="w-8 h-8 rounded-full border-2 border-inverse-surface bg-white/10 flex items-center justify-center text-[10px] font-bold">
+                +{membersCount - 3}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

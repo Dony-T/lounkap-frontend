@@ -204,10 +204,17 @@ export default function TontineDetailPage() {
               currentMembers={members.length || tontine.members?.current || 1}
             />
 
-            <div className="flex flex-col lg:flex-row gap-xl items-start">
+            <div className="flex flex-col lg:flex-row gap-xl items-start w-full">
               <div className="flex-1 flex flex-col gap-xl w-full">
-                <CurrentCycle />
-                <InfoCards />
+                <CurrentCycle
+                  amount={tontine.amount || (tontine as any).contribution}
+                  onPayment={() => setIsDepositOpen(true)}
+                  beneficiary={(tontine as any).currentBeneficiary}
+                />
+                <InfoCards
+                  description={tontine.description}
+                  membersCount={members.length}
+                />
               </div>
 
               <TransactionList transactions={transactions} />

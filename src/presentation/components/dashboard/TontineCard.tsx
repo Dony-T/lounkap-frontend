@@ -45,15 +45,22 @@ export const TontineCard = (props: any) => {
   } = props;
 
   const displayTitle = name || title || "Sans titre";
-  const displayAmount = amount || contribution || "0";
+  const displayAmount = Number(amount || contribution) || 0;
   const displayCode = inviteCode || code || "N/A";
 
   // Calculate members count based on common backend field names
-  const currentCount = members?.current || currentMembers || 1;
-  const totalCount = members?.total || maxMembers || 10;
+  const totalCount = Number(maxMembers || (members as any)?.total) || 10;
+  const currentCount = Number(currentMembers || (members as any)?.current) || 1;
 
   const config = icons[type as TontineType] || icons.other;
   const progress = totalCount > 0 ? (currentCount / totalCount) * 100 : 0;
+
+  const getFrequencyLabel = (freq: string) => {
+    const f = freq?.toUpperCase();
+    if (f === 'WEEKLY') return 'Hebdomadaire';
+    if (f === 'MONTHLY') return 'Mensuelle';
+    return freq || 'N/A';
+  };
 
   return (
     <Link href={`/tontines/${id}`} className="block">
@@ -75,12 +82,12 @@ export const TontineCard = (props: any) => {
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-grey font-medium">Cotisation</span>
               <span className="text-lg font-bold mono text-primary tracking-tight">
-                {typeof displayAmount === 'number' ? displayAmount.toLocaleString() : displayAmount} FCFA
+                {typeof displayAmount === 'number' ? displayAmount.toLocaleString() : (Number(displayAmount) || 0).toLocaleString()} FCFA
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-slate-grey font-medium">Fréquence</span>
-              <span className="text-sm font-bold text-slate">{frequency}</span>
+              <span className="text-sm font-bold text-slate">{getFrequencyLabel(frequency)}</span>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-center text-xs">

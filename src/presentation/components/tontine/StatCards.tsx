@@ -11,25 +11,35 @@ interface StatCardsProps {
 }
 
 export const StatCards = ({ amount, frequency, maxMembers, currentMembers = 1 }: StatCardsProps) => {
+  const getFrequencyLabel = (freq: string) => {
+    const f = freq?.toUpperCase();
+    if (f === 'WEEKLY') return 'Hebdomadaire';
+    if (f === 'MONTHLY') return 'Mensuelle';
+    return freq || 'N/A';
+  };
+
+  const contributionAmount = Number(amount) || 0;
+  const totalMaxMembers = Number(maxMembers) || 0;
+
   const stats = [
     {
       label: 'Cotisation',
-      value: `${typeof amount === 'number' ? amount.toLocaleString() : (amount || 0)} FCFA`,
+      value: `${contributionAmount.toLocaleString()} FCFA`,
       icon: Banknote
     },
     {
       label: 'Fréquence',
-      value: frequency || 'N/A',
+      value: getFrequencyLabel(frequency),
       icon: Calendar
     },
     {
       label: 'Cagnotte Totale',
-      value: `${(Number(amount || 0) * (maxMembers || 0)).toLocaleString()} FCFA`,
+      value: `${(contributionAmount * totalMaxMembers).toLocaleString()} FCFA`,
       icon: Wallet
     },
     {
       label: 'Membres',
-      value: `${currentMembers || 1}/${maxMembers || 1} actifs`,
+      value: `${currentMembers || 1}/${totalMaxMembers || 1} actifs`,
       icon: Users
     },
   ];
