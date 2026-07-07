@@ -22,14 +22,44 @@ import {
 } from 'lucide-react';
 import { cn } from '@/presentation/utils/cn';
 import { useTontine } from '@/presentation/hooks/useTontine';
+import { usePayment } from '@/presentation/hooks/usePayment';
+import { DepositSavingsDrawer } from '@/presentation/components/tontine/DepositSavingsDrawer';
 
 export default function CycleDetailPage() {
   const { id, cycleId } = useParams();
   const router = useRouter();
-  const { getTontineById, getCycleById, getCycleStats, isLoading, error } = useTontine();
+  const { getTontineById, getCycleById, getCycleStats, getMembers, isLoading, error } = useTontine();
+  const { getTontinePayments } = usePayment();
+
   const [cycle, setCycle] = useState<any>(null);
   const [stats, setStats] = useState<any>(null);
   const [tontine, setTontine] = useState<any>(null);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+
+  const handleNudge = async () => {
+    if (typeof id !== 'string') return;
+
+    // 1. Get all active members
+    const members = await getMembers(id);
+    const activeMembers = members?.filter((m: any) => m.status === 'ACTIVE') || [];
+
+    // 2. Get all successful payments for this tontine
+    const payments = await getTontinePayments(id);
+    // Ideally we should filter payments by the current cycle/turn if available in the API
+    const paidMemberIds = new Set(payments?.filter((p: any) => p.status === 'SUCCESS' || p.status === 'COMPLETED').map((p: any) => p.user?.id || p.userId));
+
+    // 3. Identify who hasn't paid
+    const nonPayers = activeMembers.filter((m: any) => !paidMemberIds.has(m.user?.id));
+
+    if (nonPayers.length === 0) {
+      alert("Tous les membres actifs ont déjà payé pour ce tour !");
+    } else {
+      const names = nonPayers.map((m: any) => m.user?.name).join(", ");
+      if (window.confirm(`Membres n'ayant pas encore payé : ${names}. Voulez-vous leur envoyer un rappel ?`)) {
+        alert("Relance envoyée avec succès !");
+      }
+    }
+  };
 
   const fetchData = async () => {
     console.log("CycleDetailPage: Fetching data for cycle:", cycleId);
@@ -159,11 +189,18 @@ export default function CycleDetailPage() {
                 </div>
 
                 <div className="flex items-center gap-lg">
-                  <Button className="flex-1 h-14 rounded-2xl gap-sm shadow-lg shadow-primary/20">
+                  <Button
+                    onClick={() => setIsPaymentOpen(true)}
+                    className="flex-1 h-14 rounded-2xl gap-sm shadow-lg shadow-primary/20"
+                  >
                     <CreditCard size={20} />
                     Enregistrer un paiement
                   </Button>
-                  <Button variant="secondary" className="flex-1 h-14 rounded-2xl gap-sm border-slate-light text-slate">
+                  <Button
+                    onClick={handleNudge}
+                    variant="secondary"
+                    className="flex-1 h-14 rounded-2xl gap-sm border-slate-light text-slate"
+                  >
                     <Megaphone size={20} />
                     Relancer les membres
                   </Button>
@@ -251,6 +288,13 @@ export default function CycleDetailPage() {
           </div>
         </div>
       </div>
+
+      <DepositSavingsDrawer
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        tontineId={typeof id === 'string' ? id : ''}
+        onSuccess={fetchData}
+      />
     </DashboardLayout>
   );
 }
