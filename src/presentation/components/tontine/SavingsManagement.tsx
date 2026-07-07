@@ -61,14 +61,14 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
         <Card className="bg-primary text-white shadow-lg shadow-primary/20">
           <CardContent className="p-xl flex flex-col gap-md">
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">Mon Solde Épargne</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/70">Mon Solde Épargne</span>
               <Wallet size={20} className="text-white/50" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold">{(data?.balance?.balance || 0).toLocaleString()}</span>
               <span className="text-sm font-bold text-white/70">FCFA</span>
             </div>
-            <div className="flex justify-between text-[10px] text-white/60 mt-1">
+            <div className="flex justify-between text-xs text-white/60 mt-1">
               <span>Dépôts: {(data?.balance?.totalDeposits || 0).toLocaleString()}</span>
               <span>Retraits: {(data?.balance?.totalWithdrawals || 0).toLocaleString()}</span>
             </div>
@@ -78,7 +78,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-md">
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Total Épargné (Individuel)</span>
+              <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">Total Épargné (Individuel)</span>
               <TrendingUp size={20} className="text-slate-grey/30" />
             </div>
             <div className="flex items-baseline gap-2">
@@ -87,14 +87,14 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <p className="text-[10px] font-medium text-slate-grey/60 mt-1">Épargne cumulée de {data?.globalStats?.activeSaversCount || 0} membres</p>
+            <p className="text-xs font-medium text-slate-grey/60 mt-1">Épargne cumulée de {data?.globalStats?.activeSaversCount || 0} membres</p>
           </CardContent>
         </Card>
 
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-md">
             <div className="flex justify-between items-start">
-              <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">Caisse Collective</span>
+              <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">Caisse Collective</span>
               <CircleDollarSign size={20} className="text-slate-grey/30" />
             </div>
             <div className="flex items-baseline gap-2">
@@ -103,20 +103,9 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <button className="text-[10px] font-bold text-primary hover:underline transition-all text-left">Gérer les fonds de groupe</button>
+            <button className="text-xs font-bold text-primary hover:underline transition-all text-left">Gérer les fonds de groupe</button>
           </CardContent>
         </Card>
-      </div>
-
-      {/* Search Input - Flat Layout */}
-      <div className="mt-2">
-        <div className="relative max-w-md">
-          <input
-            type="text"
-            placeholder="Filtrer vos opérations..."
-            className="w-full px-md py-sm bg-white border border-slate-light rounded-2xl text-sm focus:outline-none focus:border-primary/50 transition-colors h-11"
-          />
-        </div>
       </div>
 
       {/* Operations Table */}
