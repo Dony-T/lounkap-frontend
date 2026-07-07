@@ -23,15 +23,28 @@ interface CycleManagementProps {
 }
 
 export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
-  const { listCycles, advanceCycleTurn, closeCycle, deleteCycle, isLoading } = useTontine();
+  const { listCycles, getCycleStats, advanceCycleTurn, closeCycle, deleteCycle, isLoading } = useTontine();
   const [cycles, setCycles] = useState<any[]>([]);
+  const [activeCycleStats, setActiveCycleStats] = useState<any>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const fetchCycles = async () => {
     console.log("CycleManagement: Fetching cycles for tontine:", tontineId);
     const data = await listCycles(tontineId);
-    console.log("CycleManagement: Raw API response for cycles:", data);
-    if (data) setCycles(data);
+    if (data) {
+      setCycles(data);
+      const active = Array.isArray(data) ? data.find((c: any) => {
+        const s = c.status?.toUpperCase();
+        return s === 'ACTIVE' || s === 'IN_PROGRESS';
+      }) : null;
+
+      if (active) {
+        const stats = await getCycleStats(tontineId, active.id);
+        if (stats) setActiveCycleStats(stats);
+      } else {
+        setActiveCycleStats(null);
+      }
+    }
   };
 
   useEffect(() => {
@@ -39,8 +52,6 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
   }, [tontineId]);
 
   const cyclesList = Array.isArray(cycles) ? cycles : [];
-  console.log("CycleManagement: Full cycles list count:", cyclesList.length);
-
   const activeCycle = cyclesList.find(c => {
     const s = c.status?.toUpperCase();
     return s === 'ACTIVE' || s === 'IN_PROGRESS' || s === 'PENDING' || s === 'STARTED';
@@ -51,7 +62,12 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
     return s !== 'ACTIVE' && s !== 'IN_PROGRESS' && s !== 'PENDING' && s !== 'STARTED';
   });
 
-  console.log("CycleManagement: Detected active cycle:", activeCycle);
+  // Mapping using stats if available, fallback to basic cycle object
+  const displayFrequency = activeCycleStats?.frequency || (activeCycle as any)?.tontine?.frequency || "N/A";
+  const collected = activeCycleStats?.totalCollected || activeCycle?.collectedAmount || (activeCycle as any)?.collected_amount || 0;
+  const target = activeCycleStats?.globalPot || activeCycle?.targetAmount || (activeCycle as any)?.target_amount || 0;
+  const progress = activeCycleStats?.completionRate || (target > 0 ? Math.round((collected / target) * 100) : 0);
+  const beneficiaryName = activeCycleStats?.beneficiary || activeCycle?.currentBeneficiary?.name || "En attente";
 
   const handleNextTurn = async (cycleId: string) => {
     if (await advanceCycleTurn(tontineId, cycleId)) {
