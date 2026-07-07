@@ -111,14 +111,14 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
                 <div className="flex items-center gap-sm text-slate-grey">
                   <Calendar size={14} />
                   <span className="text-xs font-medium">
-                    Du {new Date(activeCycle.startDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    au {new Date(activeCycle.endDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    Du {activeCycle.startDate ? new Date(activeCycle.startDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+                    au {activeCycle.endDate ? new Date(activeCycle.endDate).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
                   </span>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1">
                 <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">Périodicité</span>
-                <span className="text-sm font-bold text-slate">{activeCycle.frequency || 'N/A'}</span>
+                <span className="text-sm font-bold text-slate">{activeCycle.frequency || (activeCycle as any).tontine?.frequency || 'N/A'}</span>
               </div>
             </div>
 
@@ -127,17 +127,23 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
                 <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">Tour actuel</span>
                 <div className="flex items-center gap-md">
                   <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">
-                    {activeCycle.currentBeneficiary?.name?.[0] || 'U'}
+                    {(activeCycle.currentBeneficiary?.name || (activeCycle as any).beneficiary?.name || '?')[0]}
                   </div>
-                  <span className="text-sm font-bold text-primary">{activeCycle.currentBeneficiary?.name || 'En attente'}</span>
+                  <span className="text-sm font-bold text-primary">
+                    {activeCycle.currentBeneficiary?.name || (activeCycle as any).beneficiary?.name || 'En attente'}
+                  </span>
                 </div>
               </div>
 
               <div className="flex flex-col gap-sm">
                 <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">Fonds collectés</span>
                 <div className="flex items-baseline gap-sm">
-                  <span className="text-lg font-bold text-slate">{activeCycle.collectedAmount?.toLocaleString() || 0}</span>
-                  <span className="text-xs font-medium text-slate-grey">/ {activeCycle.targetAmount?.toLocaleString() || 0} FCFA</span>
+                  <span className="text-lg font-bold text-slate">
+                    {Number(activeCycle.collectedAmount || (activeCycle as any).collected_amount || 0).toLocaleString()}
+                  </span>
+                  <span className="text-xs font-medium text-slate-grey">
+                    / {Number(activeCycle.targetAmount || (activeCycle as any).target_amount || 0).toLocaleString()} FCFA
+                  </span>
                 </div>
               </div>
 
@@ -145,13 +151,13 @@ export const CycleManagement = ({ tontineId }: CycleManagementProps) => {
                 <div className="flex justify-between items-end">
                   <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">Progression</span>
                   <span className="text-xs font-bold text-status-warning">
-                    {Math.round((activeCycle.collectedAmount / activeCycle.targetAmount) * 100) || 0}%
+                    {Math.round(((activeCycle.collectedAmount || (activeCycle as any).collected_amount || 0) / (activeCycle.targetAmount || (activeCycle as any).target_amount || 1)) * 100)}%
                   </span>
                 </div>
                 <div className="h-2 w-full bg-slate-light/50 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-status-warning rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, Math.round((activeCycle.collectedAmount / activeCycle.targetAmount) * 100) || 0)}%` }}
+                    style={{ width: `${Math.min(100, Math.round(((activeCycle.collectedAmount || (activeCycle as any).collected_amount || 0) / (activeCycle.targetAmount || (activeCycle as any).target_amount || 1)) * 100))}%` }}
                   />
                 </div>
               </div>
