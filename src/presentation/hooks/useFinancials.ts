@@ -55,10 +55,16 @@ export const useFinancials = () => {
         tontineRepository.getSavingsStats(tontineId)
       ]);
 
+      console.log("useFinancials: getMySavings Raw Ops:", opsData);
+      console.log("useFinancials: getMySavings Raw Balance:", balData);
+      console.log("useFinancials: getMySavings Raw Stats:", statsData);
+
       // Handle pagination/wrapping in operations
       const operations = opsData?.data?.savings || opsData?.savings || (Array.isArray(opsData) ? opsData : []);
       const balance = balData?.data || balData;
       const globalStats = statsData?.data || statsData;
+
+      console.log("useFinancials: Final Unboxed Balance:", balance);
 
       return { operations, balance, globalStats };
     } catch (err: any) {

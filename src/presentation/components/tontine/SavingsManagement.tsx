@@ -26,7 +26,7 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
 
   const fetchSavings = async () => {
     const result = await getMySavings(tontineId);
-    console.log("SavingsManagement: Raw result from hook:", result);
+    console.log("SavingsManagement: Final result from hook:", result);
     if (result) setData(result);
   };
 

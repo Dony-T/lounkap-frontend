@@ -34,6 +34,7 @@ export default function TontineDetailPage() {
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [activeCycle, setActiveCycle] = useState<any>(null);
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const [isLoanOpen, setIsLoanOpen] = useState(false);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
@@ -48,20 +49,21 @@ export default function TontineDetailPage() {
       if (tontineData) {
         setTontine(tontineData);
         setCurrentTontine(tontineData);
-      } else {
-        console.warn("TontineDetailPage: tontineData is null or undefined");
       }
 
-      const [memberList, txList] = await Promise.all([
+      const [memberList, txList, cyclesList] = await Promise.all([
         getMembers(id),
-        getTransactions(id)
+        getTransactions(id),
+        listCycles(id)
       ]);
-
-      console.log("TontineDetailPage: memberList:", memberList);
-      console.log("TontineDetailPage: txList:", txList);
 
       if (memberList) setMembers(memberList);
       if (txList) setTransactions(txList);
+
+      if (cyclesList && Array.isArray(cyclesList)) {
+        const active = cyclesList.find(c => c.status === 'ACTIVE' || c.status === 'IN_PROGRESS');
+        setActiveCycle(active || null);
+      }
     }
   };
 
@@ -209,7 +211,8 @@ export default function TontineDetailPage() {
                 <CurrentCycle
                   amount={tontine.amount || (tontine as any).contribution}
                   onPayment={() => setIsDepositOpen(true)}
-                  beneficiary={(tontine as any).currentBeneficiary}
+                  beneficiary={activeCycle?.currentBeneficiary || (tontine as any).currentBeneficiary}
+                  activeCycle={activeCycle}
                 />
                 <InfoCards
                   description={tontine.description}

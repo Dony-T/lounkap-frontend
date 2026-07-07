@@ -7,9 +7,12 @@ interface CurrentCycleProps {
   amount?: number | string;
   onPayment?: () => void;
   beneficiary?: any;
+  activeCycle?: any;
 }
 
-export const CurrentCycle = ({ amount, onPayment, beneficiary }: CurrentCycleProps) => {
+export const CurrentCycle = ({ amount, onPayment, beneficiary, activeCycle }: CurrentCycleProps) => {
+  const progress = activeCycle ? Math.round((activeCycle.collectedAmount / activeCycle.targetAmount) * 100) || 0 : 0;
+
   return (
     <Card className="flex-1 bg-gradient-to-br from-white to-primary/5 border border-slate-light/30 shadow-sm w-full">
       <CardContent className="flex flex-col gap-xl p-xl">
@@ -26,18 +29,25 @@ export const CurrentCycle = ({ amount, onPayment, beneficiary }: CurrentCyclePro
             </div>
           </div>
           <div className="flex flex-col items-end gap-1">
-            <span className="text-[10px] uppercase tracking-widest font-bold text-slate-grey">Prochaine levée</span>
-            <span className="text-sm font-bold text-primary tracking-tight">À définir</span>
+            <span className="text-xs uppercase tracking-widest font-bold text-slate-grey">Période</span>
+            <span className="text-sm font-bold text-primary tracking-tight">
+              {activeCycle ? new Date(activeCycle.startDate).toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' }) : 'N/A'}
+            </span>
           </div>
         </div>
 
         <div className="flex flex-col gap-3">
           <div className="flex justify-between items-end">
-            <span className="text-xs font-medium text-slate-grey italic">Progression du tour actuel</span>
-            <span className="text-sm font-bold text-primary">0%</span>
+            <span className="text-xs font-medium text-slate-grey italic">
+              {activeCycle ? `${activeCycle.collectedAmount?.toLocaleString()} / ${activeCycle.targetAmount?.toLocaleString()} FCFA collectés` : "Aucun cycle actif"}
+            </span>
+            <span className="text-sm font-bold text-primary">{progress}%</span>
           </div>
           <div className="h-2 w-full bg-slate-light/50 rounded-full overflow-hidden">
-            <div className="h-full w-[0%] bg-primary rounded-full transition-all duration-1000" />
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-1000"
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
