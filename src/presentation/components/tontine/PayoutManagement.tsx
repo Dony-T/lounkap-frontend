@@ -54,20 +54,20 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">TOTAL VERSÉ (HISTORIQUE)</span>
+            <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">TOTAL VERSÉ (HISTORIQUE)</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-status-success">
                 {(stats.totalDistributed || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <p className="text-[10px] text-slate-grey/60 mt-1 italic">{stats.completedPayoutsCount || 0} versements effectués</p>
+            <p className="text-xs text-slate-grey/60 mt-1 italic">{stats.completedPayoutsCount || 0} versements effectués</p>
           </CardContent>
         </Card>
 
         <Card className="bg-white border-slate-light/50 shadow-air">
           <CardContent className="p-xl flex flex-col gap-sm">
-            <span className="text-[10px] font-bold text-slate-grey uppercase tracking-widest">EN ATTENTE DE VERSEMENT</span>
+            <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">EN ATTENTE DE VERSEMENT</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-status-warning">
                 {(stats.pendingPayouts || 0).toLocaleString()}
