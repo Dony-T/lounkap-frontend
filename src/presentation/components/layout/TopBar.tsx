@@ -7,6 +7,7 @@ import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Button } from '@/presentation/components/ui/Button';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { NotificationPanel } from './NotificationPanel';
+import { cn } from '@/presentation/utils/cn';
 
 export const TopBar = () => {
   const { user, getProfile } = useAuth();
