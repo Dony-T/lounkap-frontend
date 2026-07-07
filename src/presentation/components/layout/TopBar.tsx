@@ -6,6 +6,7 @@ import { useAuth } from '@/presentation/hooks/useAuth';
 import { useTontineContext } from '@/presentation/context/TontineContext';
 import { Button } from '@/presentation/components/ui/Button';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { NotificationPanel } from './NotificationPanel';
 
 export const TopBar = () => {
   const { user, getProfile } = useAuth();
@@ -15,6 +16,7 @@ export const TopBar = () => {
   const pathname = usePathname();
 
   const [searchValue, setSearchValue] = useState(searchParams.get('q') || '');
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -67,10 +69,21 @@ export const TopBar = () => {
         </div>
 
         <div className="flex items-center gap-lg ml-xl">
-          <button className="relative p-sm text-slate-grey hover:text-slate hover:bg-slate-light/10 rounded-xl transition-all">
+          <button
+            onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+            className={cn(
+              "relative p-sm text-slate-grey hover:text-slate hover:bg-slate-light/10 rounded-xl transition-all",
+              isNotificationsOpen && "bg-slate-light/10 text-primary"
+            )}
+          >
             <Bell size={20} strokeWidth={1.5} />
             <span className="absolute top-2 right-2 w-2 h-2 bg-status-error rounded-full border-2 border-white" />
           </button>
+
+          <NotificationPanel
+            isOpen={isNotificationsOpen}
+            onClose={() => setIsNotificationsOpen(false)}
+          />
 
           <div className="flex items-center gap-md">
             <div className="flex flex-col items-end">
