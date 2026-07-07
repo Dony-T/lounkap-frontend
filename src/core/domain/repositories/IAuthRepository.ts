@@ -7,4 +7,5 @@ export interface IAuthRepository {
   getMe(): Promise<User>;
   updateProfile(data: Partial<User>): Promise<User>;
   updatePassword(data: any): Promise<void>;
+  uploadAvatar(file: File): Promise<{ avatarUrl: string }>;
 }

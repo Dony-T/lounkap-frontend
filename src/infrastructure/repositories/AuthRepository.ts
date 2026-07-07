@@ -61,4 +61,15 @@ export class AuthRepository implements IAuthRepository {
   async updatePassword(data: any): Promise<void> {
     await apiClient.patch('/auth/change-password', data);
   }
+
+  async uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await apiClient.post<any>('/auth/upload-avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data.data;
+  }
 }

@@ -115,5 +115,22 @@ export const useAuth = () => {
     }
   };
 
-  return { login, register, getProfile, updateProfile, updatePassword, logout, user, isLoading, error };
+  const uploadAvatar = async (file: File): Promise<string | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await authRepository.uploadAvatar(file);
+      if (user) {
+        setUser({ ...user, avatarUrl: response.avatarUrl });
+      }
+      return response.avatarUrl;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors du téléchargement de l'image");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { login, register, getProfile, updateProfile, updatePassword, uploadAvatar, logout, user, isLoading, error };
 };

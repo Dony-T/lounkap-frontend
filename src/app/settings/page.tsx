@@ -27,9 +27,10 @@ const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void 
 );
 
 export default function SettingsPage() {
-  const { user, getProfile, updateProfile, updatePassword, isLoading, error: authError } = useAuth();
+  const { user, getProfile, updateProfile, updatePassword, uploadAvatar, isLoading, error: authError } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const [profileData, setFormData] = useState({
     fullName: '',
@@ -88,6 +89,24 @@ export default function SettingsPage() {
       setSuccessMessage("Mot de passe mis à jour");
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setTimeout(() => setSuccessMessage(null), 3000);
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional: client-side validation
+    if (file.size > 2 * 1024 * 1024) {
+      alert("L'image est trop volumineuse (max 2MB)");
+      return;
+    }
+
+    const result = await uploadAvatar(file);
+    if (result) {
+      setSuccessMessage("Photo de profil mise à jour");
+      setTimeout(() => setSuccessMessage(null), 3000);
+      getProfile(); // Refresh to get the newest URL if needed
     }
   };
 
@@ -154,8 +173,22 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-md">
                   <h4 className="text-sm font-bold text-slate">Photo de profil</h4>
                   <div className="flex items-center gap-md">
-                    <Button type="button" variant="secondary" size="sm" className="gap-sm py-2 px-md font-medium text-xs">
-                      <Upload size={14} />
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="gap-sm py-2 px-md font-medium text-xs"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <Loader2 className="animate-spin" size={14} /> : <Upload size={14} />}
                       Changer la photo
                     </Button>
                     <span className="text-[11px] text-slate-grey">Format JPG ou PNG, max 2MB.</span>
