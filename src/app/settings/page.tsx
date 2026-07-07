@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown, Check, Bell, Globe, ChevronUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Camera, Upload, User, Lock, Sliders, Save, Trash2, ChevronDown, Check, Bell, Globe, ChevronUp, Loader2 } from 'lucide-react';
 import { DashboardLayout } from '@/presentation/components/layout/DashboardLayout';
 import { Button } from '@/presentation/components/ui/Button';
 import { Input } from '@/presentation/components/ui/Input';
-import { Card } from '@/presentation/components/ui/Card';
+import { Card, CardContent } from '@/presentation/components/ui/Card';
 import { cn } from '@/presentation/utils/cn';
+import { useAuth } from '@/presentation/hooks/useAuth';
 
 const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
   <button
@@ -26,12 +27,69 @@ const Toggle = ({ enabled, onChange }: { enabled: boolean; onChange: () => void 
 );
 
 export default function SettingsPage() {
+  const { user, getProfile, updateProfile, updatePassword, isLoading, error: authError } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [profileData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    city: 'Douala',
+    currency: 'XAF - Franc CFA'
+  });
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
   const [notifications, setNotifications] = useState({
     reminders: true,
     payouts: true,
     activity: false
   });
+
+  useEffect(() => {
+    if (!user) {
+      getProfile();
+    } else {
+      setFormData({
+        fullName: user.fullName || '',
+        phone: user.phone || '',
+        city: user.city || 'Douala',
+        currency: user.currency || 'XAF - Franc CFA'
+      });
+    }
+  }, [user]);
+
+  const handleProfileSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMessage(null);
+    const result = await updateProfile(profileData);
+    if (result) {
+      setSuccessMessage("Profil mis à jour avec succès");
+      setTimeout(() => setSuccessMessage(null), 3000);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert("Les mots de passe ne correspondent pas");
+      return;
+    }
+    setSuccessMessage(null);
+    const result = await updatePassword({
+      oldPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword
+    });
+    if (result) {
+      setSuccessMessage("Mot de passe mis à jour");
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setSuccessMessage(null), 3000);
+    }
+  };
 
   const tabs = [
     { id: 'profile', label: 'Mon Profil', icon: User },
@@ -52,7 +110,10 @@ export default function SettingsPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setSuccessMessage(null);
+              }}
               className={cn(
                 "pb-md px-sm text-sm font-medium transition-all relative",
                 activeTab === tab.id
@@ -68,28 +129,39 @@ export default function SettingsPage() {
           ))}
         </div>
 
+        {(authError || successMessage) && (
+          <div className={cn(
+            "p-md rounded-2xl text-sm font-bold animate-in fade-in slide-in-from-top-2 duration-300",
+            authError ? "bg-status-error/10 text-status-error border border-status-error/20" : "bg-status-success/10 text-status-success border border-status-success/20"
+          )}>
+            {authError || successMessage}
+          </div>
+        )}
+
         {activeTab === 'profile' && (
-          <div className="flex flex-col gap-lg animate-fade-in">
+          <form onSubmit={handleProfileSubmit} className="flex flex-col gap-lg animate-fade-in">
             {/* Profile Photo Card */}
             <Card padding="lg" className="flex items-center gap-xl">
-              <div className="relative">
-                <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center text-secondary font-bold text-xl">
-                  JD
+              <CardContent className="flex items-center gap-xl p-0 w-full">
+                <div className="relative">
+                  <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center text-secondary font-bold text-xl overflow-hidden">
+                    {user?.avatarUrl ? <img src={user.avatarUrl} className="w-full h-full object-cover" /> : (user?.fullName || 'U').split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <button type="button" className="absolute bottom-0 right-0 p-1.5 bg-white rounded-full border border-slate-light shadow-sm text-slate-grey hover:text-secondary transition-colors">
+                    <Camera size={14} />
+                  </button>
                 </div>
-                <button className="absolute bottom-0 right-0 p-1.5 bg-white rounded-full border border-slate-light shadow-sm text-slate-grey hover:text-secondary transition-colors">
-                  <Camera size={14} />
-                </button>
-              </div>
-              <div className="flex flex-col gap-md">
-                <h4 className="text-sm font-bold text-slate">Photo de profil</h4>
-                <div className="flex items-center gap-md">
-                   <Button variant="secondary" size="sm" className="gap-sm py-2 px-md font-medium text-xs">
-                    <Upload size={14} />
-                    Changer la photo
-                  </Button>
-                  <span className="text-[11px] text-slate-grey">Format JPG ou PNG, max 2MB.</span>
+                <div className="flex flex-col gap-md">
+                  <h4 className="text-sm font-bold text-slate">Photo de profil</h4>
+                  <div className="flex items-center gap-md">
+                    <Button type="button" variant="secondary" size="sm" className="gap-sm py-2 px-md font-medium text-xs">
+                      <Upload size={14} />
+                      Changer la photo
+                    </Button>
+                    <span className="text-[11px] text-slate-grey">Format JPG ou PNG, max 2MB.</span>
+                  </div>
                 </div>
-              </div>
+              </CardContent>
             </Card>
 
             {/* Personal Info Card */}
@@ -100,7 +172,11 @@ export default function SettingsPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-md">
-                <Input label="Nom complet" defaultValue="Jean Dupont" />
+                <Input
+                  label="Nom complet"
+                  value={profileData.fullName}
+                  onChange={(e) => setFormData({ ...profileData, fullName: e.target.value })}
+                />
                 <div className="flex flex-col gap-xs w-full">
                   <label className="text-sm font-medium text-slate-grey ml-1 uppercase tracking-wider text-[11px]">
                     Adresse Email
@@ -108,7 +184,7 @@ export default function SettingsPage() {
                   <div className="relative">
                     <input
                       disabled
-                      defaultValue="jean.dupont@example.com"
+                      value={user?.email || ''}
                       className="w-full border border-slate-light rounded-2xl px-md py-sm bg-slate-light/5 text-slate-grey cursor-not-allowed text-sm"
                     />
                     <Lock size={14} className="absolute right-md top-1/2 -translate-y-1/2 text-slate-grey/40" />
@@ -116,7 +192,11 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <Input label="Numéro de téléphone" defaultValue="+237 6 00 00 00 00" />
+              <Input
+                label="Numéro de téléphone"
+                value={profileData.phone}
+                onChange={(e) => setFormData({ ...profileData, phone: e.target.value })}
+              />
 
               <div className="grid grid-cols-2 gap-md">
                 <div className="flex flex-col gap-xs">
@@ -124,9 +204,15 @@ export default function SettingsPage() {
                     Ville
                   </label>
                   <div className="relative">
-                    <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-white text-sm text-slate">
-                      <option>Douala</option>
-                      <option>Yaoundé</option>
+                    <select
+                      value={profileData.city}
+                      onChange={(e) => setFormData({ ...profileData, city: e.target.value })}
+                      className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-white text-sm text-slate"
+                    >
+                      <option value="Douala">Douala</option>
+                      <option value="Yaoundé">Yaoundé</option>
+                      <option value="Bafoussam">Bafoussam</option>
+                      <option value="Garoua">Garoua</option>
                     </select>
                     <ChevronDown size={16} className="absolute right-md top-1/2 -translate-y-1/2 text-slate-grey pointer-events-none" />
                   </div>
@@ -136,10 +222,14 @@ export default function SettingsPage() {
                     Devise préférée
                   </label>
                   <div className="relative">
-                    <select className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-white text-sm text-slate">
-                      <option>XAF - Franc CFA</option>
-                      <option>EUR - Euro</option>
-                      <option>USD - Dollar</option>
+                    <select
+                      value={profileData.currency}
+                      onChange={(e) => setFormData({ ...profileData, currency: e.target.value })}
+                      className="w-full border border-slate-light rounded-2xl px-md py-sm outline-none appearance-none bg-white text-sm text-slate"
+                    >
+                      <option value="XAF - Franc CFA">XAF - Franc CFA</option>
+                      <option value="EUR - Euro">EUR - Euro</option>
+                      <option value="USD - Dollar">USD - Dollar</option>
                     </select>
                     <ChevronDown size={16} className="absolute right-md top-1/2 -translate-y-1/2 text-slate-grey pointer-events-none" />
                   </div>
@@ -147,8 +237,8 @@ export default function SettingsPage() {
               </div>
 
               <div className="flex justify-end mt-md">
-                <Button className="gap-sm px-xl py-md">
-                  <Save size={18} />
+                <Button type="submit" disabled={isLoading} className="gap-sm px-xl py-md">
+                  {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
                   Enregistrer les modifications
                 </Button>
               </div>
@@ -160,15 +250,15 @@ export default function SettingsPage() {
                 <h4 className="text-sm font-bold text-status-error uppercase tracking-wider text-[11px]">Zone de danger</h4>
                 <p className="text-sm text-slate-grey">Désactivez votre compte ou demandez la suppression de vos données.</p>
               </div>
-              <button className="text-status-error font-bold text-sm hover:underline transition-all">
+              <button type="button" className="text-status-error font-bold text-sm hover:underline transition-all">
                 Désactiver mon compte
               </button>
             </div>
-          </div>
+          </form>
         )}
 
         {activeTab === 'security' && (
-          <div className="flex flex-col gap-lg animate-fade-in">
+          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-lg animate-fade-in">
             <Card padding="lg" className="flex flex-col gap-xl">
               <div className="flex items-center gap-sm text-slate">
                 <div className="w-8 h-8 bg-[#fdfaf1] rounded-lg flex items-center justify-center text-[#a68928] border border-[#f5ead2]">
@@ -182,8 +272,10 @@ export default function SettingsPage() {
                   <label className="text-sm font-bold text-slate">Mot de passe actuel</label>
                   <Input
                     type="password"
-                    defaultValue="........"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                     className="bg-slate-light/5 border-slate-light/40"
+                    required
                   />
                 </div>
 
@@ -192,29 +284,33 @@ export default function SettingsPage() {
                     <label className="text-sm font-bold text-slate">Nouveau mot de passe</label>
                     <Input
                       type="password"
-                      defaultValue="........"
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                       className="bg-slate-light/5 border-slate-light/40"
+                      required
                     />
                   </div>
                   <div className="flex flex-col gap-xs">
                     <label className="text-sm font-bold text-slate">Confirmer le mot de passe</label>
                     <Input
                       type="password"
-                      defaultValue="........"
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                       className="bg-slate-light/5 border-slate-light/40"
+                      required
                     />
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-end mt-md">
-                <Button className="gap-sm px-xl py-md rounded-full font-bold">
-                  <Check size={18} />
+                <Button type="submit" disabled={isLoading} className="gap-sm px-xl py-md rounded-full font-bold">
+                  {isLoading ? <Loader2 className="animate-spin" size={18} /> : <Check size={18} />}
                   Mettre à jour
                 </Button>
               </div>
             </Card>
-          </div>
+          </form>
         )}
 
         {activeTab === 'preferences' && (

@@ -52,4 +52,13 @@ export class AuthRepository implements IAuthRepository {
     const response = await apiClient.get<any>('/auth/me');
     return response.data.data.user;
   }
+
+  async updateProfile(data: Partial<User>): Promise<User> {
+    const response = await apiClient.patch<any>('/auth/profile', data);
+    return response.data.data.user;
+  }
+
+  async updatePassword(data: any): Promise<void> {
+    await apiClient.patch('/auth/change-password', data);
+  }
 }

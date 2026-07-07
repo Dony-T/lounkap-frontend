@@ -86,5 +86,34 @@ export const useAuth = () => {
     window.location.href = "/auth/login";
   };
 
-  return { login, register, getProfile, logout, user, isLoading, error };
+  const updateProfile = async (data: Partial<User>): Promise<User | null> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const updatedUser = await authRepository.updateProfile(data);
+      setUser(updatedUser);
+      return updatedUser;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la mise à jour du profil");
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updatePassword = async (data: any): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await authRepository.updatePassword(data);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la mise à jour du mot de passe");
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { login, register, getProfile, updateProfile, updatePassword, logout, user, isLoading, error };
 };
