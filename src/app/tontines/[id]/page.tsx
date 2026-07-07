@@ -29,7 +29,7 @@ export default function TontineDetailPage() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'Aperçu';
 
-  const { getTontineById, getMembers, getTransactions, isLoading, error } = useTontine();
+  const { getTontineById, getMembers, getTransactions, listCycles, isLoading, error } = useTontine();
   const { setCurrentTontine } = useTontineContext();
   const [tontine, setTontine] = useState<Tontine | null>(null);
   const [members, setMembers] = useState<any[]>([]);

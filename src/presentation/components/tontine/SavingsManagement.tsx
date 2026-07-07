@@ -65,12 +65,12 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
               <Wallet size={20} className="text-white/50" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold">{(data?.balance?.balance || 0).toLocaleString()}</span>
+              <span className="text-3xl font-bold">{(data?.balance?.totalBalance || data?.balance?.balance || 0).toLocaleString()}</span>
               <span className="text-sm font-bold text-white/70">FCFA</span>
             </div>
             <div className="flex justify-between text-xs text-white/60 mt-1">
-              <span>Dépôts: {(data?.balance?.totalDeposits || 0).toLocaleString()}</span>
-              <span>Retraits: {(data?.balance?.totalWithdrawals || 0).toLocaleString()}</span>
+              <span>Confirmé: {(data?.balance?.balance || 0).toLocaleString()}</span>
+              <span>En attente: {(data?.balance?.pendingBalance || 0).toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
@@ -83,11 +83,11 @@ export const SavingsManagement = ({ tontineId }: SavingsManagementProps) => {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-slate">
-                {(data?.globalStats?.totalIndividualSavings || 0).toLocaleString()}
+                {(data?.globalStats?.globalTheoreticalBalance || data?.globalStats?.totalIndividualSavings || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <p className="text-xs font-medium text-slate-grey/60 mt-1">Épargne cumulée de {data?.globalStats?.activeSaversCount || 0} membres</p>
+            <p className="text-xs font-medium text-slate-grey/60 mt-1">Dont {(data?.globalStats?.totalPendingSavings || 0).toLocaleString()} FCFA en attente</p>
           </CardContent>
         </Card>
 
