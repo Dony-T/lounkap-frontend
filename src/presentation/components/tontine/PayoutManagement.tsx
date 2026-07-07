@@ -57,11 +57,11 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
             <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">TOTAL VERSÉ (HISTORIQUE)</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-status-success">
-                {(stats.totalDistributed || 0).toLocaleString()}
+                {(stats.totalPaidOut || stats.totalDistributed || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
-            <p className="text-xs text-slate-grey/60 mt-1 italic">{stats.completedPayoutsCount || 0} versements effectués</p>
+            <p className="text-xs text-slate-grey/60 mt-1 italic">{stats.totalPayoutsCount || stats.completedPayoutsCount || 0} versements effectués</p>
           </CardContent>
         </Card>
 
@@ -70,7 +70,7 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
             <span className="text-xs font-bold text-slate-grey uppercase tracking-widest">EN ATTENTE DE VERSEMENT</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-bold text-status-warning">
-                {(stats.pendingPayouts || 0).toLocaleString()}
+                {(stats.totalPendingPayouts || stats.pendingPayouts || 0).toLocaleString()}
               </span>
               <span className="text-xs font-bold text-slate-grey">FCFA</span>
             </div>
@@ -84,11 +84,11 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-light/5 border-b border-slate-light/30">
-                <th className="px-lg py-md text-[10px] font-bold text-slate-grey uppercase tracking-widest">Bénéficiaire</th>
-                <th className="px-lg py-md text-[10px] font-bold text-slate-grey uppercase tracking-widest">Cycle / Date</th>
-                <th className="px-lg py-md text-[10px] font-bold text-slate-grey uppercase tracking-widest">Montant</th>
-                <th className="px-lg py-md text-[10px] font-bold text-slate-grey uppercase tracking-widest text-center">Statut</th>
-                <th className="px-lg py-md text-[10px] font-bold text-slate-grey uppercase tracking-widest text-right">Actions</th>
+                <th className="px-lg py-md text-xs font-bold text-slate-grey uppercase tracking-widest">Bénéficiaire</th>
+                <th className="px-lg py-md text-xs font-bold text-slate-grey uppercase tracking-widest">Cycle / Date</th>
+                <th className="px-lg py-md text-xs font-bold text-slate-grey uppercase tracking-widest">Montant</th>
+                <th className="px-lg py-md text-xs font-bold text-slate-grey uppercase tracking-widest text-center">Statut</th>
+                <th className="px-lg py-md text-xs font-bold text-slate-grey uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-light/30">
@@ -104,8 +104,10 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
                   </td>
                   <td className="px-lg py-lg">
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-slate-grey">{payout.cycleId ? 'Cycle Actuel' : 'N/A'}</span>
-                      <span className="text-[10px] text-slate-grey/60">
+                      <span className="text-sm font-medium text-slate-grey">
+                        {payout.cycle?.currentTurn ? `Tour ${payout.cycle.currentTurn}` : 'Cycle Actuel'}
+                      </span>
+                      <span className="text-xs text-slate-grey/60">
                         {payout.createdAt ? new Date(payout.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }) : '-'}
                       </span>
                     </div>
@@ -113,13 +115,13 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
                   <td className="px-lg py-lg">
                     <div className="flex items-baseline gap-1">
                       <span className="text-sm font-bold text-slate">{(Number(payout.amount) || 0).toLocaleString()}</span>
-                      <span className="text-[10px] font-medium text-slate-grey">FCFA</span>
+                      <span className="text-xs font-medium text-slate-grey">FCFA</span>
                     </div>
                   </td>
                   <td className="px-lg py-lg text-center">
                     <Badge
                       className={cn(
-                        "border-none text-[10px] font-bold px-3 py-1",
+                        "border-none text-xs font-bold px-3 py-1",
                         payout.status === 'PAID' ? "bg-status-success/10 text-status-success" : "bg-status-warning/10 text-status-warning"
                       )}
                     >
@@ -127,13 +129,13 @@ export const PayoutManagement = ({ tontineId }: PayoutManagementProps) => {
                     </Badge>
                   </td>
                   <td className="px-lg py-lg text-right">
-                    {payout.status !== 'PAID' ? (
+                    {payout.status === 'PENDING' ? (
                       <Button
                         onClick={() => handleMarkAsPaid(payout.id)}
                         disabled={isLoading}
-                        className="bg-status-success hover:bg-status-success/90 text-white border-none text-[11px] font-bold h-9 px-4 rounded-xl shadow-md shadow-status-success/20"
+                        className="bg-status-success hover:bg-status-success/90 text-white border-none text-xs font-bold h-9 px-4 rounded-xl shadow-md shadow-status-success/20"
                       >
-                        {isLoading ? <Loader2 size={14} className="animate-spin" /> : 'Marquer Payé'}
+                        {isLoading ? <Loader2 size={14} className="animate-spin" /> : 'Valider'}
                       </Button>
                     ) : (
                       <button className="p-sm text-slate-grey hover:text-slate transition-colors">
